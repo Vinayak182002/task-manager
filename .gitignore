@@ -1,5 +1,6 @@
 # Node modules
-/node_modules/
+node_modules/
+server/node_modules
 
 # Build outputs
 /dist/
@@ -51,3 +52,6 @@ yarn.lock
 
 # Serverless framework build output (if applicable)
 .serverless/
+
+# Miscellaneous files
+*.txt
