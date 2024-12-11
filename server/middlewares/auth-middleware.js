@@ -9,14 +9,6 @@ const validate = (schema) => async (req,res,next) => {
         // console.log(error);
         const message = error.issues[0].message ;
         const extraDetails = "Some error occured through validators";
-        // passing the object to next
-        // console.log(message,extraDetails);
-        // const e={
-        //     status,
-        //     message,
-        //     extraDetails
-        // };
-        // res.status(400).send({e});
         next({status,message,extraDetails});
     }
 };
