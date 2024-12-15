@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
-import {toast} from "react-toastify";
-import {useNavigate} from "react-router-dom";
+import { toast } from "react-toastify";
+import { useNavigate, Link } from "react-router-dom"; // Import Link for navigation
 import styles from "./SuperAdmin.module.css";
-import BannerImage from "../../assets/superAdminRegistration.svg"
+import BannerImage from "../../assets/superAdminRegistration.svg";
 import { SERVERHOST } from "../../constants/constant";
-const SuperAdminRegister = () => {
 
+const SuperAdminRegister = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -31,48 +31,45 @@ const SuperAdminRegister = () => {
     console.log(SERVERHOST);
     e.preventDefault();
     try {
-        const response = await axios.post(
-            `http://localhost:5000/api/task-manager-app/auth/superadmin-register`,
-            {
-                fullName: formData.fullName,
-                userName: formData.userName,
-                email: formData.email,
-                password: formData.password,
-            },
-            {
-                headers:{
-                    "Content-Type":"application/json",
-                },
-            }
-        );
-
-        if(response.statusText === "OK")
+      const response = await axios.post(
+        `http://localhost:5000/api/task-manager-app/auth/superadmin-register`,
         {
-            setFormData({
-                fullName: "",
-                userName: "",
-                email: "",
-                password: "",
-            });
-            localStorage.setItem("tokenSuperAdmin",response.data.token);
-            toast.success("Admin Registered Successfully!");
-            navigate("/super-admin-login");
+          fullName: formData.fullName,
+          userName: formData.userName,
+          email: formData.email,
+          password: formData.password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
+      );
+
+      if (response.statusText === "OK") {
+        setFormData({
+          fullName: "",
+          userName: "",
+          email: "",
+          password: "",
+        });
+        localStorage.setItem("tokenSuperAdmin", response.data.token);
+        toast.success("Admin Registered Successfully!");
+        navigate("/super-admin-login");
+      }
     } catch (error) {
-        if (error.response) {
-            if (error.response.status === 400) {
-              toast.error(
-                error.response.data.message || "Invalid Credentials!"
-              );
-            } else if (error.response.status === 401) {
-              toast.error("Unauthorized! Check your credentials.");
-            } else {
-              toast.error("Something went wrong! Please try again.");
-            }
-          } else {
-            toast.error("Network error! Please check your connection.");
-          }
-          console.log("Registration Error:", error);
+      if (error.response) {
+        if (error.response.status === 400) {
+          toast.error(error.response.data.message || "Invalid Credentials!");
+        } else if (error.response.status === 401) {
+          toast.error("Unauthorized! Check your credentials.");
+        } else {
+          toast.error("Something went wrong! Please try again.");
+        }
+      } else {
+        toast.error("Network error! Please check your connection.");
+      }
+      console.log("Registration Error:", error);
     }
   };
 
@@ -164,6 +161,16 @@ const SuperAdminRegister = () => {
               </button>
             </div>
           </form>
+
+          {/* Link to Login Page */}
+          <div className={styles.loginLinkContainer}>
+            <p>
+              Already have an account?{" "}
+              <Link to="/super-admin-login" className={styles.loginLink}>
+                Login!
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </div>

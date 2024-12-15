@@ -156,6 +156,21 @@ html, body {
   background-color: #a777e3;
 }
 
+.loginLinkContainer {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.loginLink {
+  color: #3a5b99;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.loginLink:hover {
+  text-decoration: underline;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .container {

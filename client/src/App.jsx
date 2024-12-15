@@ -3,7 +3,10 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SuperAdminRegister from "./pages/registration/SuperAdminRegister";
 import SuperAdminLogin from "./pages/login/superAdminLogin";
+import AdminLogin from "./pages/login/AdminLogin";
+import EmployeeLogin from "./pages/login/EmployeeLogin";
 import Home from "./pages/dashboard/Home";
+import SuperAdminDashboard from "./pages/dashboard/SuperAdminDashboard";
 
 const App = () => {
   return (
@@ -29,7 +32,10 @@ const App = () => {
             element={<SuperAdminRegister />}
           />
           <Route path="/super-admin-login" element={<SuperAdminLogin />} />
+          <Route path="/admin-login" element={<AdminLogin />} />
+          <Route path="/employee-login" element={<EmployeeLogin />} />
           <Route path="/home" element={<Home />} />
+          <Route path="/super-admin-dashboard" element={<SuperAdminDashboard />} />
         </Routes>
       </BrowserRouter>
     </>

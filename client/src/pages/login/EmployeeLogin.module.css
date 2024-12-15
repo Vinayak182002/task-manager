@@ -1,28 +1,25 @@
-/* SuperAdminLogin.module.css */
+/* EmployeeLogin.module.css */
 
-/* General Reset */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
   }
   
-  /* Centered Box Container */
   .container {
     display: flex;
     width: 1000px;
-    max-width: 1200px; /* Adjust max-width for larger screens */
-    height: 500px; /* Fixed box height */
+    max-width: 1200px;
+    height: 500px;
     background-color: #fff;
     border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Shadow for centered box */
-    overflow: hidden; /* Prevent any content overflow */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
   }
   
-  /* Left Panel */
   .leftPanel {
     flex: 1;
-    background: linear-gradient(135deg, #6e8efb, #a777e3); /* Matching registration color scheme */
+    background: linear-gradient(135deg, #3a5b99, #6d8ca0); /* New professional gradient */
     color: #fff;
     display: flex;
     flex-direction: column;
@@ -33,7 +30,7 @@
   
   .bannerImage {
     width: 100%;
-    max-width: 300px;
+    max-width: 280px;
     margin-bottom: 15px;
     border-radius: 10px;
   }
@@ -46,11 +43,10 @@
   
   .welcomeText {
     font-size: 1rem;
-    opacity: 0.9;
+    opacity: 0.85;
     text-align: center;
   }
   
-  /* Right Panel */
   .rightPanel {
     flex: 1;
     display: flex;
@@ -96,12 +92,11 @@
   }
   
   .formGroup input:focus {
-    border-color: #6e8efb;
-    box-shadow: 0 0 5px rgba(110, 142, 251, 0.5);
+    border-color: #3a5b99; /* Focus color from gradient theme */
+    box-shadow: 0 0 5px rgba(58, 91, 153, 0.5);
     outline: none;
   }
   
-  /* Password Field */
   .passwordField {
     position: relative;
   }
@@ -122,7 +117,6 @@
     cursor: pointer;
   }
   
-  /* Button */
   .buttonContainer {
     display: flex;
     justify-content: center;
@@ -134,7 +128,7 @@
     font-size: 1rem;
     font-weight: 600;
     color: #fff;
-    background-color: #6e8efb; /* Matching button color scheme */
+    background-color: #3a5b99; /* Button color from gradient theme */
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -142,25 +136,9 @@
   }
   
   .registerBtn:hover {
-    background-color: #a777e3;
-  }
-
-  .signupLinkContainer {
-    text-align: center;
-    margin-top: 20px;
+    background-color: #6d8ca0; /* Lighter shade from gradient */
   }
   
-  .signupLink {
-    color: #3a5b99;
-    text-decoration: none;
-    font-weight: 600;
-  }
-  
-  .signupLink:hover {
-    text-decoration: underline;
-  }
-  
-  /* Responsive Design */
   @media (max-width: 768px) {
     .container {
       flex-direction: column;

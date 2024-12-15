@@ -1,21 +1,21 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate, Link } from "react-router-dom"; // Import Link for navigation
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import styles from "./SuperAdminLogin.module.css"; // You can reuse the existing styles
-import BannerImage from "../../assets/superAdminLogin.svg"; // You can use a similar banner image
+import styles from "./AdminLogin.module.css";
+import BannerImage from "../../assets/adminLogin.svg"; // You can use a similar banner image
 import { SERVERHOST } from "../../constants/constant";
-import useAuth from "../../constants/useAuth";
+import useAuthAdmin from "../../constants/useAuthAdmin";
 
-const SuperAdminLogin = () => {
-  useAuth();
+const AdminLogin = () => {
+  useAuthAdmin();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
-  const [showPassword, setShowPassword] = useState(false); // State for password visibility
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -30,7 +30,7 @@ const SuperAdminLogin = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        `${SERVERHOST}/api/task-manager-app/auth/superadmin-login`,
+        `${SERVERHOST}/api/task-manager-app/auth/admin-login`,
         {
           email: formData.email,
           password: formData.password,
@@ -43,9 +43,9 @@ const SuperAdminLogin = () => {
       );
 
       if (response.statusText === "OK") {
-        localStorage.setItem("tokenSuperAdmin", response.data.token);
+        localStorage.setItem("tokenAdmin", response.data.token);
         toast.success("Login successful!");
-        navigate("/super-admin-dashboard");
+        navigate("/home");
       }
     } catch (error) {
       if (error.response) {
@@ -65,25 +65,22 @@ const SuperAdminLogin = () => {
 
   return (
     <div className={styles.container}>
-      {/* Left Panel */}
       <div className={styles.leftPanel}>
         <img
           src={BannerImage}
-          alt="Super Admin Login"
+          alt="Admin Login"
           className={styles.bannerImage}
         />
-        <h1 className={styles.welcomeTitle}>Welcome Back to Task Manager</h1>
+        <h1 className={styles.welcomeTitle}>Welcome Back Admin</h1>
         <p className={styles.welcomeText}>
-          Login to continue managing the task flow.
+          Login to manage the task flow and monitor progress.
         </p>
       </div>
 
-      {/* Right Panel */}
       <div className={styles.rightPanel}>
         <div className={styles.formContainer}>
-          <h2 className={styles.title}>Super Admin Login</h2>
+          <h2 className={styles.title}>Admin Login</h2>
           <form onSubmit={handleSubmit}>
-            {/* Email */}
             <div className={styles.formGroup}>
               <label htmlFor="email">Email</label>
               <input
@@ -96,7 +93,6 @@ const SuperAdminLogin = () => {
               />
             </div>
 
-            {/* Password */}
             <div className={styles.formGroup}>
               <label htmlFor="password">Password</label>
               <div className={styles.passwordField}>
@@ -118,27 +114,16 @@ const SuperAdminLogin = () => {
               </div>
             </div>
 
-            {/* Submit Button */}
             <div className={styles.buttonContainer}>
               <button type="submit" className={styles.registerBtn}>
                 Login
               </button>
             </div>
           </form>
-
-          {/* Link to Registration Page */}
-          <div className={styles.signupLinkContainer}>
-            <p>
-              Don't have an account?{" "}
-              <Link to="/super-admin-register" className={styles.signupLink}>
-                Signup!
-              </Link>
-            </p>
-          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default SuperAdminLogin;
+export default AdminLogin;
