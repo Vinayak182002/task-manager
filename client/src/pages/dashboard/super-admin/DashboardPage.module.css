@@ -1,0 +1,20 @@
+.dashboardPage {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .dashboardPage h1 {
+    color: #333;
+    font-size: 2rem;
+    margin-bottom: 15px;
+  }
+  
+  .dashboardPage p {
+    color: #555;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+  

@@ -9,6 +9,7 @@ const useAuthAdmin = () => {
     const token = localStorage.getItem("tokenAdmin");  // Check for the token
 
     if (!token) {
+      toast.error("Session Expired! Please login!")
       navigate("/admin-login"); 
     }
   }, [navigate]);

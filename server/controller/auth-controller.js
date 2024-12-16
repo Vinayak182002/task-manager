@@ -325,6 +325,7 @@ const employeeLogin = async (req, res) => {
     const isPasswordValid = await employee.comparePassword(password);
     if (isPasswordValid) {
       res.status(200).json({
+        employee,
         message: "Login Successful",
         token: await employee.generateAuthToken(),
         userId: employee._id.toString(),

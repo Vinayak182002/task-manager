@@ -5,10 +5,10 @@ import { toast } from "react-toastify";
 import styles from "./SuperAdminLogin.module.css"; // You can reuse the existing styles
 import BannerImage from "../../assets/superAdminLogin.svg"; // You can use a similar banner image
 import { SERVERHOST } from "../../constants/constant";
-import useAuth from "../../constants/useAuth";
+// import useAuth from "../../constants/useAuth";
 
 const SuperAdminLogin = () => {
-  useAuth();
+  // useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",

@@ -5,10 +5,10 @@ import { toast } from "react-toastify";
 import styles from "./EmployeeLogin.module.css";
 import BannerImage from "../../assets/employeeLogin.svg"; // You can use a similar banner image
 import { SERVERHOST } from "../../constants/constant";
-import useAuthEmployee from "../../constants/useAuthEmployee";
+// import useAuthEmployee from "../../constants/useAuthEmployee";
 
 const EmployeeLogin = () => {
-  useAuthEmployee();
+  // useAuthEmployee();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
@@ -45,7 +45,11 @@ const EmployeeLogin = () => {
       if (response.statusText === "OK") {
         localStorage.setItem("tokenEmployee", response.data.token);
         toast.success("Login successful!");
-        navigate("/home");
+        // console.log(response.data);
+        const department = response.data.employee.department;
+        if(department === "design"){
+          navigate("/design-employee-dashboard");
+        }
       }
     } catch (error) {
       if (error.response) {

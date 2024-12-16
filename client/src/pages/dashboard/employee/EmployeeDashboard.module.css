@@ -1,0 +1,251 @@
+/* Common styles for the Admin Dashboard */
+.dashboardContainer {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    font-family: "Poppins", sans-serif;
+    color: #333;
+    margin: 0;
+  }
+  
+  /* Sidebar */
+  .sidebar {
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    color: #fff;
+    box-shadow: 3px 0 10px rgba(0, 0, 0, 0.2);
+    transition: width 0.3s ease;
+    height: 100vh; /* Ensure full height */
+    overflow-y: auto; /* Enable vertical scrolling */
+  }
+  
+  /* Hide scrollbar */
+  .sidebar::-webkit-scrollbar {
+    width: 0px; /* Hide scrollbar */
+    background: transparent; /* Optional: hide the scrollbar track */
+  }
+  
+  .sidebar::-webkit-scrollbar-thumb {
+    background: transparent; /* Optional: hide the scrollbar thumb */
+  }
+  
+  .collapsedSidebar {
+    width: 80px;
+    padding: 10px;
+  }
+  
+  .logo {
+    font-size: 1.8rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    transition: opacity 0.3s ease;
+  }
+  
+  .collapsedSidebar .logo {
+    font-size: 1.2rem;
+    opacity: 0.8;
+  }
+  
+  .menu {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .menuItem {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    margin: 8px 0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #fff;
+  }
+  
+  .menuItem:hover,
+  .menuItem.active {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateX(5px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .menuIcon {
+    margin-right: 12px;
+    font-size: 1.4rem;
+    transition: margin-right 0.3s ease;
+  }
+  
+  .collapsedSidebar .menuIcon {
+    margin-right: 0;
+  }
+  
+  .menuLabel {
+    font-size: 1rem;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  
+  .collapsedSidebar .menuLabel {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  
+  /* Toggle Button */
+  .toggleIcon {
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 20px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  
+  .toggleIcon:hover {
+    transform: scale(1.1);
+  }
+  
+  /* Main Content */
+  .mainContent {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #f4f4f9;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  /* Top Bar */
+  .topBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+  }
+  
+  .pageTitle {
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+  
+  .profileSection {
+    position: relative;
+    cursor: pointer;
+  }
+  
+  .profileImage {
+    width: 45px;
+    height: 45px;
+    margin-right: 15px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    transition: transform 0.3s ease;
+  }
+  
+  .profileImage:hover {
+    transform: scale(1.1);
+  }
+  
+  .dropdownMenu {
+    position: absolute;
+    right: 0;
+    top: 55px;
+    width: 120px;
+    background: #ffffff;
+    color: #333;
+    border-radius: 5px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+    overflow: hidden;
+    animation: fadeIn 0.3s ease;
+  }
+  
+  .dropdownItem {
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .dropdownItem:hover {
+    background: #f0f0f0;
+  }
+  
+  /* Fade In Animation */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Content Area */
+  .contentArea {
+    flex: 1;
+    padding: 40px;
+    background-color: #f4f4f9;
+    overflow-y: auto;
+  }
+  
+  .contentArea h1 {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .contentArea p {
+    font-size: 1rem;
+    color: #555;
+    line-height: 1.8;
+    max-width: 800px;
+  }
+  
+  /* Footer */
+  .footer {
+    background: var(--sidebar-bg-color); /* Use the same color as sidebar */
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    font-size: 1rem;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+.footerContent {
+    margin: 0;
+}
+  
+ /* Custom colors for each department */
+.application {
+    --sidebar-bg-color: #83a3fc;  /* Dark Green */
+  }
+  
+  .design {
+    --sidebar-bg-color: #4c6dc7;  /* Deep Orange */
+  }
+  
+  .production {
+    --sidebar-bg-color: #2b499c;  /* Dark Gray */
+  }
+  
+  .store {
+    --sidebar-bg-color: #112661;  /* Deep Red */
+  }
+  
+  .quality {
+    --sidebar-bg-color: #06153f;  /* Dark Purple */
+  }
+  
+  .purchase {
+    --sidebar-bg-color: #00071c;  /* Professional Blue */
+  }
+  

@@ -9,6 +9,7 @@ const useAuthEmployee = () => {
     const token = localStorage.getItem("tokenEmployee");  // Check for the token
 
     if (!token) {
+      toast.error("Session Expired! Please login!")
       navigate("/employee-login"); 
     }
   }, [navigate]);
