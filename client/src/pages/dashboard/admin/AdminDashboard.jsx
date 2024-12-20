@@ -1,15 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import styles from "./AdminDashboard.module.css";
-// import useAuthAmin from "../../../constants/useAuthAdmin"
+import useAuthAdmin from "../../../constants/useAuthAdmin";
 
 // Importing individual page components
 import DashboardPage from "./DashboardPage";
 import ManageTasks from "./ManageTasks";
-import TaskTable from "./TaskTable";
 
 
 const AdminDashboard = ({ department }) => {
-  // useAuthAmin();
+  useAuthAdmin();
   const [selectedMenu, setSelectedMenu] = useState("Dashboard");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -49,8 +48,8 @@ const AdminDashboard = ({ department }) => {
     switch (selectedMenu) {
       case "Dashboard":
         return <DashboardPage />;
-      case "Manage Tasks":
-        return <TaskTable />;
+      // case "Manage Tasks":
+      //   return <TaskTable />;
       default:
         return <DashboardPage />;
     }

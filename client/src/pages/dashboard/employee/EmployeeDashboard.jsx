@@ -4,10 +4,10 @@ import styles from "./EmployeeDashboard.module.css";
 // Importing individual page components (you can add more if needed)
 // import TaskList from "./TaskList";
 import DahboardPage from "./DashboardPage";
-// import useAuthEmployee from "../../../constants/useAuthEmployee";
+import useAuthEmployee from "../../../constants/useAuthEmployee";
 
 const EmployeeDashboard = ({ department }) => {
-  // useAuthEmployee();
+  useAuthEmployee();
   const [selectedMenu, setSelectedMenu] = useState("Dashboard");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);

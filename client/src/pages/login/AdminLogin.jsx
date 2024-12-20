@@ -5,10 +5,8 @@ import { toast } from "react-toastify";
 import styles from "./AdminLogin.module.css";
 import BannerImage from "../../assets/adminLogin.svg"; // You can use a similar banner image
 import { SERVERHOST } from "../../constants/constant";
-// import useAuthAdmin from "../../constants/useAuthAdmin";
 
 const AdminLogin = () => {
-  // useAuthAdmin();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
@@ -45,7 +43,8 @@ const AdminLogin = () => {
       if (response.statusText === "OK") {
         localStorage.setItem("tokenAdmin", response.data.token);
         toast.success("Login successful!");
-        navigate("/home");
+        const department = response.data.department;
+        navigate(`/${department}-admin-dashboard`);
       }
     } catch (error) {
       if (error.response) {

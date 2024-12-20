@@ -45,11 +45,8 @@ const EmployeeLogin = () => {
       if (response.statusText === "OK") {
         localStorage.setItem("tokenEmployee", response.data.token);
         toast.success("Login successful!");
-        // console.log(response.data);
-        const department = response.data.employee.department;
-        if(department === "design"){
-          navigate("/design-employee-dashboard");
-        }
+        const department = response.data.department;
+        navigate(`/${department}-employee-dashboard`);
       }
     } catch (error) {
       if (error.response) {

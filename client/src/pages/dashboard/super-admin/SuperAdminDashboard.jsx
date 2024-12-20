@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import styles from "./SuperAdminDashboard.module.css";
+import useAuth from "../../../constants/useAuth";
 
 // Importing individual page components
 import DashboardPage from "./DashboardPage";
@@ -9,6 +10,7 @@ import DashboardPage from "./DashboardPage";
 // import SettingsPage from "./SettingsPage/SettingsPage";
 
 const SuperAdminDashboard = () => {
+  useAuth();
   const [selectedMenu, setSelectedMenu] = useState("Dashboard");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);

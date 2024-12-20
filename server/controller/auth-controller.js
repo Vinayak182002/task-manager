@@ -197,6 +197,7 @@ const adminLogin = async (req, res) => {
         message: "Login Successful",
         token: await admin.generateAuthToken(),
         userId: admin._id.toString(),
+        department: admin.department,
       });
     } else {
       res.status(400).json({ message: "Invalid email or password " });
@@ -325,10 +326,10 @@ const employeeLogin = async (req, res) => {
     const isPasswordValid = await employee.comparePassword(password);
     if (isPasswordValid) {
       res.status(200).json({
-        employee,
         message: "Login Successful",
         token: await employee.generateAuthToken(),
         userId: employee._id.toString(),
+        department: employee.department,
       });
     } else {
       res.status(400).json({ message: "Invalid email or password" });
