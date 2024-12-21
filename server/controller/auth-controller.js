@@ -6,6 +6,7 @@ const nodemailer = require("nodemailer");
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
 
+
 const home = async (req, res) => {
   try {
     res.status(200).send("Hi router from contro");
@@ -180,6 +181,37 @@ const registerDepartmentAdmin = async (req, res) => {
     });
   }
 };
+
+
+
+const sendEmail = async (req, res) => {
+  const { email, fullName, password } = req.body;
+
+  try {
+    // Setup Nodemailer transporter
+    const transporter = nodemailer.createTransport({
+      service: "gmail", // Or another service
+      auth: {
+        user: "vinayakshete182002@gmail.com", // Your email
+        pass: "Vinayak@Placed1!",   // Your email password or an app-specific password
+      },
+    });
+
+    const mailOptions = {
+      from: "vinayakshete182002@gmail.com",
+      to: email,
+      subject: "Admin Registration - Task Manager",
+      text: `Dear ${fullName},\n\nYou have been registered as an Admin. Your login credentials are:\n\nEmail: ${email}\nPassword: ${password}\n\nPlease log in to your account and change your password.\n\nBest Regards,\nYour Company`,
+    };
+
+    await transporter.sendMail(mailOptions);
+    res.status(200).json({ message: "Email sent successfully" });
+  } catch (error) {
+    console.error("Error sending email:", error);
+    res.status(500).json({ message: "Error sending email" });
+  }
+};
+
 
 const adminLogin = async (req, res) => {
   try {
@@ -389,4 +421,5 @@ module.exports = {
   registerEmployee,
   employeeLogin,
   changeEmployeePassword,
+  sendEmail,
 };

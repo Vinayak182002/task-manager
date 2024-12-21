@@ -1,20 +1,61 @@
-.dashboardPage {
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    text-align: center;
-  }
-  
-  .dashboardPage h1 {
-    color: #333;
-    font-size: 2rem;
-    margin-bottom: 15px;
-  }
-  
-  .dashboardPage p {
-    color: #555;
-    font-size: 1rem;
-    line-height: 1.5;
-  }
-  
+.dashboardContainer {
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.dashboardTitle {
+  font-size: 2rem;
+  margin-bottom: 30px;
+}
+
+.taskCards {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.taskCard {
+  width: 18%; /* Reduced width to make the cards smaller */
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Shadow effect */
+  text-align: center;
+  position: relative; /* Position for the color line */
+}
+
+.taskCard h4 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.taskCount {
+  font-size: 1.5rem; /* Reduced font size for better appearance */
+  font-weight: bold;
+}
+
+.taskCard::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 4px; /* Thickness of the line */
+  background-color: #36A2EB; /* Color of the line */
+}
+
+.taskCard + .taskCard {
+  margin-left: 10px; /* Small gap between cards */
+}
+
+.chartsContainer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+
+.chartContainer {
+  width: 32%; /* Set width of charts to fit 3 in the row */
+  height: 300px;
+}

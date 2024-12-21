@@ -9,6 +9,10 @@ import { SERVERHOST } from "../../../constants/constant";
 // Importing individual page components
 import DashboardPage from "./DashboardPage";
 import Profile from "./Profile";
+import CreateNewTask from "./CreateNewTask";
+import AssignTaskToAdmin from "./AssignTaskToAdmin";
+import ManageAdmins from "./ManageAdmins";
+import ManageEmployees from "./ManageEmployees";
 // import ManageAdminsPage from "./ManageAdminsPage/ManageAdminsPage";
 // import ManageEmployeesPage from "./ManageEmployeesPage/ManageEmployeesPage";
 // import ReportsPage from "./ReportsPage/ReportsPage";
@@ -54,10 +58,12 @@ const SuperAdminDashboard = () => {
 
   const menuItems = [
     { label: "Dashboard", icon: "🏠" },
+    { label: "Create Task", icon: "➕" },
+    { label: "Assign Task", icon: "➕" },
     { label: "Manage Admins", icon: "👤" },
     { label: "Manage Employees", icon: "👥" },
-    { label: "Reports", icon: "📊" },
-    { label: "Settings", icon: "⚙️" },
+    // { label: "Reports", icon: "📊" },
+    // { label: "Settings", icon: "⚙️" },
   ];
 
   // Function to render the selected page dynamically
@@ -65,6 +71,14 @@ const SuperAdminDashboard = () => {
     switch (selectedMenu) {
       case "Dashboard":
         return <DashboardPage />;
+      case "Create Task":
+        return <CreateNewTask />;
+      case "Assign Task":
+        return <AssignTaskToAdmin />;
+      case "Manage Admins":
+        return <ManageAdmins />;
+        case "Manage Employees":
+        return <ManageEmployees />;
       case "Profile":
         return <Profile />;
       default:

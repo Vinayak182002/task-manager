@@ -10,4 +10,6 @@ router2.route("/update-sa-data").put(updateDataControllers.updateSAInformation);
 router2.route("/update-admin-data").put(updateDataControllers.updateAdminInformation);
 router2.route("/update-employee-data").put(updateDataControllers.updateEmployeeInformation);
 
+router2.route("/get-all-users-by-role/:role").get(getDataControllers.getAllUsersByRole);
+
 module.exports = router2;

@@ -13,4 +13,5 @@ router.route("/employee-login").post(validate(zodSchema.employeeLoginSchema),con
 router.route("/change-sa-password").post(validate(zodSchema.changePasswordSchema),controllers.changeSuperAdminPassword);
 router.route("/change-admin-password").post(validate(zodSchema.changePasswordSchema),controllers.changeAdminPassword);
 router.route("/change-employee-password").post(validate(zodSchema.changePasswordSchema),controllers.changeEmployeePassword);
+router.route("/send-mail").post(controllers.sendEmail);
 module.exports = router;
