@@ -155,7 +155,7 @@
     position: absolute;
     right: 0;
     top: 55px;
-    width: 120px;
+    width: 200px;
     background: #ffffff;
     color: #333;
     border-radius: 5px;
@@ -248,4 +248,80 @@
   .purchase {
     --sidebar-bg-color: #00071c;  /* Professional Blue */
   }
+
+  /* Modal Overlay */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal Content */
+.modalContent {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  width: 400px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Input Fields */
+.modalInput {
+  margin-bottom: 15px;
+}
+
+.modalInput label {
+  display: block;
+  font-weight: bold;
+}
+
+.modalInput input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+/* Error Message */
+.errorMessage {
+  color: red;
+  font-size: 0.9rem;
+  margin-bottom: 15px;
+}
+
+/* Modal Buttons */
+.modalButtons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.modalButtons button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.modalButtons button:hover {
+  opacity: 0.9;
+}
+
+/* Cancel Button Styling */
+.modalButtons button:nth-child(2) {
+  background-color: #ccc;
+  color: #333;
+}
+
+.modalButtons button:nth-child(1) {
+  background-color: #6a11cb;
+  color: white;
+}
   

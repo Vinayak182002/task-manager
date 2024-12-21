@@ -89,23 +89,30 @@ const DashboardPage = () => {
 
             {/* Charts Section */}
             <div className={style.chartsContainer}>
-                <div className={style.chartContainer}>
+                <div className={style.chartCard}>
                     <h3>Task Statistics</h3>
-                    <Doughnut data={taskStatsData} options={chartOptions} />
+                    <div className={style.chartContainer}>
+                        <Doughnut data={taskStatsData} options={chartOptions} />
+                    </div>
                 </div>
 
-                <div className={style.chartContainer}>
+                <div className={style.chartCard}>
                     <h3>Employee Performance</h3>
-                    <Line data={employeePerformanceData} options={chartOptions} />
+                    <div className={style.chartContainer}>
+                        <Line data={employeePerformanceData} options={chartOptions} />
+                    </div>
                 </div>
 
-                <div className={style.chartContainer}>
+                <div className={style.chartCard}>
                     <h3>Milestone Achievements</h3>
-                    <Bar data={milestoneAchievementsData} options={chartOptions} />
+                    <div className={style.chartContainer}>
+                        <Bar data={milestoneAchievementsData} options={chartOptions} />
+                    </div>
                 </div>
             </div>
         </div>
     );
 };
+
 
 export default DashboardPage;

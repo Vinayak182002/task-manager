@@ -5,6 +5,7 @@ import useAuth from "../../../constants/useAuth";
 import ProfilePhoto from "../../../assets/profile-photo.jpg";
 import { fetchProfileData } from "./get-Data";
 import { SERVERHOST } from "../../../constants/constant";
+import { toast } from "react-toastify";
 
 // Importing individual page components
 import DashboardPage from "./DashboardPage";
@@ -13,10 +14,6 @@ import CreateNewTask from "./CreateNewTask";
 import AssignTaskToAdmin from "./AssignTaskToAdmin";
 import ManageAdmins from "./ManageAdmins";
 import ManageEmployees from "./ManageEmployees";
-// import ManageAdminsPage from "./ManageAdminsPage/ManageAdminsPage";
-// import ManageEmployeesPage from "./ManageEmployeesPage/ManageEmployeesPage";
-// import ReportsPage from "./ReportsPage/ReportsPage";
-// import SettingsPage from "./SettingsPage/SettingsPage";
 
 const SuperAdminDashboard = () => {
   useAuth();
@@ -24,22 +21,27 @@ const SuperAdminDashboard = () => {
   const [selectedMenu, setSelectedMenu] = useState("Dashboard");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [profileData, setProfileData] = useState(null); // State to store profile data
+  const [profileData, setProfileData] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
   const dropdownRef = useRef(null);
 
-  // Fetch profile data when the component mounts
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await fetchProfileData();
-        setProfileData(data); // Set profile data to state
+        setProfileData(data);
       } catch (error) {
         console.error("Error fetching profile data:", error);
       }
     };
 
     fetchData();
-  }, []); // Empty dependency array ensures this runs only once on mount
+  }, []);
 
   // Close dropdown if clicked outside
   useEffect(() => {
@@ -62,11 +64,8 @@ const SuperAdminDashboard = () => {
     { label: "Assign Task", icon: "➕" },
     { label: "Manage Admins", icon: "👤" },
     { label: "Manage Employees", icon: "👥" },
-    // { label: "Reports", icon: "📊" },
-    // { label: "Settings", icon: "⚙️" },
   ];
 
-  // Function to render the selected page dynamically
   const renderPage = () => {
     switch (selectedMenu) {
       case "Dashboard":
@@ -77,7 +76,7 @@ const SuperAdminDashboard = () => {
         return <AssignTaskToAdmin />;
       case "Manage Admins":
         return <ManageAdmins />;
-        case "Manage Employees":
+      case "Manage Employees":
         return <ManageEmployees />;
       case "Profile":
         return <Profile />;
@@ -92,13 +91,49 @@ const SuperAdminDashboard = () => {
   };
 
   const handleProfileClick = () => {
-    setSelectedMenu("Profile"); // Update selected menu to Profile
-    setDropdownOpen(false); // Close dropdown when clicked
+    setSelectedMenu("Profile");
+    setDropdownOpen(false);
+  };
+
+  const openChangePasswordModal = () => {
+    setModalOpen(true);
+    setErrorMessage(""); // Reset error message when opening modal
+  };
+
+  const handleChangePassword = async () => {
+    if (newPassword !== confirmPassword) {
+      setErrorMessage("Passwords do not match");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${SERVERHOST}/api/task-manager-app/auth/change-sa-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("tokenSuperAdmin")}`,
+        },
+        body: JSON.stringify({
+          oldPassword,
+          newPassword,
+        }),
+      });
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success("Password changed successfully! Please login.");
+        logout();
+      } else {
+        setErrorMessage(data.message || "Error changing password");
+      }
+    } catch (error) {
+      console.error("Error changing password:", error);
+      setErrorMessage("Something went wrong. Please try again.");
+    }
   };
 
   return (
     <div className={styles.dashboardContainer}>
-      {/* Sidebar */}
       <aside
         className={`${styles.sidebar} ${
           isSidebarCollapsed ? styles.collapsedSidebar : ""
@@ -131,16 +166,11 @@ const SuperAdminDashboard = () => {
         </nav>
       </aside>
 
-      {/* Main Content */}
       <div className={styles.mainContent}>
-        {/* Top Bar */}
         <header className={styles.topBar}>
           <div className={styles.pageTitle}>
-            Welcome,{" "}
-            {profileData && profileData.fullName
-              ? profileData.fullName
-              : "Super-Admin"}{" "}
-            - {selectedMenu}
+            Welcome, {profileData ? profileData.fullName : "Super-Admin"} -{" "}
+            {selectedMenu}
           </div>
           <div
             className={styles.profileSection}
@@ -163,6 +193,12 @@ const SuperAdminDashboard = () => {
                 >
                   <span className={styles.dropdownIcon}>👤</span> Profile
                 </div>
+                <div
+                  className={styles.dropdownItem}
+                  onClick={openChangePasswordModal}
+                >
+                  <span className={styles.dropdownIcon}>🔑</span> Change Password
+                </div>
                 <div className={styles.dropdownItem} onClick={logout}>
                   <span className={styles.dropdownIcon}>🚪</span> Logout
                 </div>
@@ -171,10 +207,47 @@ const SuperAdminDashboard = () => {
           </div>
         </header>
 
-        {/* Render Selected Page */}
         <div className={styles.contentArea}>{renderPage()}</div>
 
-        {/* Footer */}
+        {modalOpen && (
+          <div className={styles.modalOverlay}>
+            <div className={styles.modalContent}>
+              <h2>Change Password</h2>
+              <div className={styles.modalInput}>
+                <label>Old Password</label>
+                <input
+                  type="password"
+                  value={oldPassword}
+                  onChange={(e) => setOldPassword(e.target.value)}
+                />
+              </div>
+              <div className={styles.modalInput}>
+                <label>New Password</label>
+                <input
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                />
+              </div>
+              <div className={styles.modalInput}>
+                <label>Confirm New Password</label>
+                <input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+              </div>
+              {errorMessage && (
+                <div className={styles.errorMessage}>{errorMessage}</div>
+              )}
+              <div className={styles.modalButtons}>
+                <button onClick={handleChangePassword}>Submit</button>
+                <button onClick={() => setModalOpen(false)}>Cancel</button>
+              </div>
+            </div>
+          </div>
+        )}
+
         <footer className={styles.footer}>
           <div className={styles.footerContent}>
             &copy; {new Date().getFullYear()} SuperAdmin Dashboard - Designed by

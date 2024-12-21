@@ -1,61 +1,77 @@
 .dashboardContainer {
   padding: 20px;
-  text-align: center;
-  margin-bottom: 50px;
 }
 
 .dashboardTitle {
-  font-size: 2rem;
-  margin-bottom: 30px;
+  text-align: center;
+  margin-bottom: 40px;
 }
 
 .taskCards {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 30px;
+  gap: 20px; /* Ensures consistent spacing between all task cards */
+  margin-bottom: 40px; /* Optional: adds space between task cards and the chart section */
 }
 
 .taskCard {
-  width: 18%; /* Reduced width to make the cards smaller */
-  padding: 15px;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Shadow effect */
+  width: 23%; /* Ensures that each task card takes up 23% of the container width */
+  padding: 20px;
+  background-color: #ffffff;
   text-align: center;
-  position: relative; /* Position for the color line */
-}
-
-.taskCard h4 {
-  font-size: 1.2rem;
-  margin-bottom: 10px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.481);
+  position: relative;
 }
 
 .taskCount {
-  font-size: 1.5rem; /* Reduced font size for better appearance */
+  font-size: 24px;
   font-weight: bold;
+  color: #333;
 }
 
-.taskCard::after {
+/* Colored lines below task cards */
+.taskCard:after {
   content: '';
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 4px; /* Thickness of the line */
-  background-color: #36A2EB; /* Color of the line */
+  height: 5px;
+  border-radius: 5px;
 }
 
-.taskCard + .taskCard {
-  margin-left: 10px; /* Small gap between cards */
+/* Custom colors for each task card's line */
+.taskCard:nth-child(1):after {
+  background-color: #ff0037; /* Red for Total Tasks */
+}
+
+.taskCard:nth-child(2):after {
+  background-color: #0099ff; /* Blue for Assigned Tasks */
+}
+
+.taskCard:nth-child(3):after {
+  background-color: #44ff00; /* Yellow for In-Progress Tasks */
+}
+
+.taskCard:nth-child(4):after {
+  background-color: #4BC0C0; /* Green for Completed Tasks */
 }
 
 .chartsContainer {
   display: flex;
   justify-content: space-between;
-  margin-top: 30px;
+  gap: 20px;
+}
+
+.chartCard {
+  width: 30%; /* Ensures each chart card takes up 30% of the container width */
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.481);
+  border-radius: 10px;
 }
 
 .chartContainer {
-  width: 32%; /* Set width of charts to fit 3 in the row */
-  height: 300px;
+  height: 300px; /* Set the desired height for the chart */
 }

@@ -40,10 +40,10 @@ const App = () => {
           <Route path="/super-admin-dashboard" element={<SuperAdminDashboard />} />
           <Route path="/application-admin-dashboard" element={<AdminDashboard department="application"/>} />
           <Route path="/design-admin-dashboard" element={<AdminDashboard department="design"/>} />
-          <Route path="/production-admin-dashboard3" element={<AdminDashboard department="production"/>} />
-          <Route path="/store-admin-dashboard4" element={<AdminDashboard department="store"/>} />
-          <Route path="/quality-admin-dashboard5" element={<AdminDashboard department="quality"/>} />
-          <Route path="/purchase-admin-dashboard6" element={<AdminDashboard department="purchase"/>} />
+          <Route path="/production-admin-dashboard" element={<AdminDashboard department="production"/>} />
+          <Route path="/store-admin-dashboard" element={<AdminDashboard department="store"/>} />
+          <Route path="/quality-admin-dashboard" element={<AdminDashboard department="quality"/>} />
+          <Route path="/purchase-admin-dashboard" element={<AdminDashboard department="purchase"/>} />
           <Route path="/application-employee-dashboard" element={<EmployeeDashboard department="application" />} />
           <Route path="/design-employee-dashboard" element={<EmployeeDashboard department="design" />} />
           <Route path="/production-employee-dashboard" element={<EmployeeDashboard department="production" />} />
