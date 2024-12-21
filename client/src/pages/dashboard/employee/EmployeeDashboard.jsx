@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./EmployeeDashboard.module.css";
+import ProfilePhoto from "../../../assets/profile-photo.jpg";
+import { fetchProfileData } from "./get-Data";
+import { SERVERHOST } from "../../../constants/constant";
 
-// Importing individual page components (you can add more if needed)
-// import TaskList from "./TaskList";
 import DahboardPage from "./DashboardPage";
+import Profile from "./Profile";
 import useAuthEmployee from "../../../constants/useAuthEmployee";
 
 const EmployeeDashboard = ({ department }) => {
@@ -12,9 +14,24 @@ const EmployeeDashboard = ({ department }) => {
   const navigate = useNavigate();
   const [selectedMenu, setSelectedMenu] = useState("Dashboard");
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [profileData, setProfileData] = useState(null); // State to store profile data
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   const dropdownRef = useRef(null);
+
+  // Fetch profile data when the component mounts
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchProfileData();
+        setProfileData(data); // Set profile data to state
+      } catch (error) {
+        console.error("Error fetching profile data:", error);
+      }
+    };
+
+    fetchData();
+  }, []); // Empty dependency array ensures this runs only once on mount
 
   // Close dropdown if clicked outside
   useEffect(() => {
@@ -44,15 +61,22 @@ const EmployeeDashboard = ({ department }) => {
     switch (selectedMenu) {
       case "Dashboard":
         return <DahboardPage />;
+      case "Profile":
+        return <Profile />;
       default:
         return <DahboardPage />;
     }
   };
 
-  const logout = () =>{
-    localStorage.removeItem('tokenEmployee');
-    navigate('/employee-login')
-  }
+  const logout = () => {
+    localStorage.removeItem("tokenEmployee");
+    navigate("/employee-login");
+  };
+
+  const handleProfileClick = () => {
+    setSelectedMenu("Profile"); // Update selected menu to Profile
+    setDropdownOpen(false); // Close dropdown when clicked
+  };
 
   const getDepartmentTheme = () => {
     const themes = {
@@ -69,9 +93,7 @@ const EmployeeDashboard = ({ department }) => {
   const departmentColor = getDepartmentTheme();
 
   return (
-    <div
-      className={`${styles.dashboardContainer} ${styles[department]}`}
-    >
+    <div className={`${styles.dashboardContainer} ${styles[department]}`}>
       {/* Sidebar */}
       <aside
         className={`${styles.sidebar} ${
@@ -116,20 +138,29 @@ const EmployeeDashboard = ({ department }) => {
         >
           {/* Department Name Displayed in the Top Bar */}
           <div className={styles.pageTitle}>
-            {department.charAt(0).toUpperCase() + department.slice(1)} Department - {selectedMenu}
+            Welcome,{" "}
+            {profileData && profileData.fullName
+              ? profileData.fullName
+              : "Employee"}{" "}
+            - {department.charAt(0).toUpperCase() + department.slice(1)}{" "}
+            Department - {selectedMenu}
           </div>
           <div
             className={styles.profileSection}
             onClick={() => setDropdownOpen(!dropdownOpen)}
           >
             <img
-              src="https://via.placeholder.com/40"
+              src={
+                profileData && profileData.profilePhoto
+                  ? `${SERVERHOST}${profileData.profilePhoto}`
+                  : ProfilePhoto || "https://via.placeholder.com/40"
+              }
               alt="Profile"
               className={styles.profileImage}
             />
             {dropdownOpen && (
               <div ref={dropdownRef} className={styles.dropdownMenu}>
-                <div className={styles.dropdownItem}>
+                <div className={styles.dropdownItem} onClick={handleProfileClick}>
                   <span className={styles.dropdownIcon}>👤</span> Profile
                 </div>
                 <div className={styles.dropdownItem} onClick={logout}>
@@ -149,7 +180,8 @@ const EmployeeDashboard = ({ department }) => {
           style={{ backgroundColor: departmentColor }}
         >
           <div className={styles.footerContent}>
-            &copy; {new Date().getFullYear()} Employee Dashboard - Designed by PV Softwares. All rights reserved.
+            &copy; {new Date().getFullYear()} Employee Dashboard - Designed by
+            PV Softwares. All rights reserved.
           </div>
         </footer>
       </div>

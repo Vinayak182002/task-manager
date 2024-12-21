@@ -78,8 +78,8 @@ const SuperAdminDashboard = () => {
   };
 
   const handleProfileClick = () => {
-    setSelectedMenu("Profile");  // Update selected menu to Profile
-    setDropdownOpen(false);  // Close dropdown when clicked
+    setSelectedMenu("Profile"); // Update selected menu to Profile
+    setDropdownOpen(false); // Close dropdown when clicked
   };
 
   return (
@@ -121,7 +121,13 @@ const SuperAdminDashboard = () => {
       <div className={styles.mainContent}>
         {/* Top Bar */}
         <header className={styles.topBar}>
-          <div className={styles.pageTitle}>Welcome, {profileData && profileData.fullName ? profileData.fullName : "Super-Admin"} - {selectedMenu}</div>
+          <div className={styles.pageTitle}>
+            Welcome,{" "}
+            {profileData && profileData.fullName
+              ? profileData.fullName
+              : "Super-Admin"}{" "}
+            - {selectedMenu}
+          </div>
           <div
             className={styles.profileSection}
             onClick={() => setDropdownOpen(!dropdownOpen)}
@@ -137,7 +143,10 @@ const SuperAdminDashboard = () => {
             />
             {dropdownOpen && (
               <div ref={dropdownRef} className={styles.dropdownMenu}>
-                <div className={styles.dropdownItem} onClick={handleProfileClick}>
+                <div
+                  className={styles.dropdownItem}
+                  onClick={handleProfileClick}
+                >
                   <span className={styles.dropdownIcon}>👤</span> Profile
                 </div>
                 <div className={styles.dropdownItem} onClick={logout}>
