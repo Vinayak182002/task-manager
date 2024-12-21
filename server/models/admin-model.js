@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const path = require('path');
 const jwt = require('jsonwebtoken');
 
 // Department Admin Schema
@@ -47,8 +46,8 @@ const adminSchema = new mongoose.Schema(
       trim: true,
     },
     profilePhoto: {
-      type: String, // Path to the uploaded profile photo file
-      default: '',
+      type: String, // Store the photo URL or path
+      default: '', // Default to an empty string if no photo is uploaded
     },
     phoneNumber: {
       type: String,
@@ -102,36 +101,6 @@ adminSchema.methods.generateAuthToken = function () {
   const options = { expiresIn: '1h' }; // Token expires in 1 hour
   return jwt.sign(payload, secretKey, options);
 };
-
-// Multer Configuration for File Uploads (For Profile Photos)
-const multer = require('multer');
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, '../uploads/profiles')); // Upload folder
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
-  },
-});
-
-const upload = multer({
-  storage: storage,
-  limits: { fileSize: 2 * 1024 * 1024 }, // 2 MB max file size
-  fileFilter: function (req, file, cb) {
-    const allowedTypes = /jpeg|jpg|png|gif/;
-    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = allowedTypes.test(file.mimetype);
-    if (extname && mimetype) {
-      cb(null, true);
-    } else {
-      cb(new Error('Only images (jpeg, jpg, png, gif) are allowed'));
-    }
-  },
-});
-
-// Export Multer Upload Middleware
-module.exports.upload = upload;
 
 // Department Admin Model
 const Admin = mongoose.model('Admin', adminSchema);

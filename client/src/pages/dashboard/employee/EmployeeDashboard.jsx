@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "./EmployeeDashboard.module.css";
 
 // Importing individual page components (you can add more if needed)
@@ -8,6 +9,7 @@ import useAuthEmployee from "../../../constants/useAuthEmployee";
 
 const EmployeeDashboard = ({ department }) => {
   useAuthEmployee();
+  const navigate = useNavigate();
   const [selectedMenu, setSelectedMenu] = useState("Dashboard");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -46,6 +48,11 @@ const EmployeeDashboard = ({ department }) => {
         return <DahboardPage />;
     }
   };
+
+  const logout = () =>{
+    localStorage.removeItem('tokenEmployee');
+    navigate('/employee-login')
+  }
 
   const getDepartmentTheme = () => {
     const themes = {
@@ -125,7 +132,7 @@ const EmployeeDashboard = ({ department }) => {
                 <div className={styles.dropdownItem}>
                   <span className={styles.dropdownIcon}>👤</span> Profile
                 </div>
-                <div className={styles.dropdownItem}>
+                <div className={styles.dropdownItem} onClick={logout}>
                   <span className={styles.dropdownIcon}>🚪</span> Logout
                 </div>
               </div>

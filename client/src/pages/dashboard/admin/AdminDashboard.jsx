@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef} from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "./AdminDashboard.module.css";
 import useAuthAdmin from "../../../constants/useAuthAdmin";
 
@@ -8,6 +9,7 @@ import ManageTasks from "./ManageTasks";
 
 
 const AdminDashboard = ({ department }) => {
+  const navigate = useNavigate();
   useAuthAdmin();
   const [selectedMenu, setSelectedMenu] = useState("Dashboard");
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -42,6 +44,11 @@ const AdminDashboard = ({ department }) => {
     { label: "Reports", icon: "📊" },
     { label: "Settings", icon: "⚙️" },
   ];
+
+  const logout = () =>{
+    localStorage.removeItem('tokenAdmin');
+    navigate('/admin-login')
+  }
 
   // Function to render the selected page dynamically
   const renderPage = () => {
@@ -127,7 +134,7 @@ const AdminDashboard = ({ department }) => {
                 <div className={styles.dropdownItem}>
                   <span className={styles.dropdownIcon}>👤</span> Profile
                 </div>
-                <div className={styles.dropdownItem}>
+                <div className={styles.dropdownItem} onClick={logout}>
                   <span className={styles.dropdownIcon}>🚪</span> Logout
                 </div>
               </div>

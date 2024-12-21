@@ -1,9 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "./SuperAdminDashboard.module.css";
 import useAuth from "../../../constants/useAuth";
+import ProfilePhoto from "../../../assets/profile-photo.jpg";
+import { fetchProfileData } from "./get-Data";
+import { SERVERHOST } from "../../../constants/constant";
 
 // Importing individual page components
 import DashboardPage from "./DashboardPage";
+import Profile from "./Profile";
 // import ManageAdminsPage from "./ManageAdminsPage/ManageAdminsPage";
 // import ManageEmployeesPage from "./ManageEmployeesPage/ManageEmployeesPage";
 // import ReportsPage from "./ReportsPage/ReportsPage";
@@ -11,11 +16,26 @@ import DashboardPage from "./DashboardPage";
 
 const SuperAdminDashboard = () => {
   useAuth();
+  const navigate = useNavigate();
   const [selectedMenu, setSelectedMenu] = useState("Dashboard");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-
+  const [profileData, setProfileData] = useState(null); // State to store profile data
   const dropdownRef = useRef(null);
+
+  // Fetch profile data when the component mounts
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchProfileData();
+        setProfileData(data); // Set profile data to state
+      } catch (error) {
+        console.error("Error fetching profile data:", error);
+      }
+    };
+
+    fetchData();
+  }, []); // Empty dependency array ensures this runs only once on mount
 
   // Close dropdown if clicked outside
   useEffect(() => {
@@ -36,11 +56,6 @@ const SuperAdminDashboard = () => {
     { label: "Dashboard", icon: "🏠" },
     { label: "Manage Admins", icon: "👤" },
     { label: "Manage Employees", icon: "👥" },
-    { label: "Manage Employees", icon: "👥" },
-    { label: "Manage Employees", icon: "👥" },
-    { label: "Manage Employees", icon: "👥" },
-    { label: "Manage Employees", icon: "👥" },
-    { label: "Manage Employees", icon: "👥" },
     { label: "Reports", icon: "📊" },
     { label: "Settings", icon: "⚙️" },
   ];
@@ -50,17 +65,21 @@ const SuperAdminDashboard = () => {
     switch (selectedMenu) {
       case "Dashboard":
         return <DashboardPage />;
-      // case "Manage Admins":
-      //   return <ManageAdminsPage />;
-      // case "Manage Employees":
-      //   return <ManageEmployeesPage />;
-      // case "Reports":
-      //   return <ReportsPage />;
-      // case "Settings":
-      //   return <SettingsPage />;
+      case "Profile":
+        return <Profile />;
       default:
         return <DashboardPage />;
     }
+  };
+
+  const logout = () => {
+    localStorage.removeItem("tokenSuperAdmin");
+    navigate("/super-admin-login");
+  };
+
+  const handleProfileClick = () => {
+    setSelectedMenu("Profile");  // Update selected menu to Profile
+    setDropdownOpen(false);  // Close dropdown when clicked
   };
 
   return (
@@ -71,7 +90,6 @@ const SuperAdminDashboard = () => {
           isSidebarCollapsed ? styles.collapsedSidebar : ""
         }`}
       >
-        {/* Hamburger Icon */}
         <div
           className={styles.toggleIcon}
           onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
@@ -103,22 +121,26 @@ const SuperAdminDashboard = () => {
       <div className={styles.mainContent}>
         {/* Top Bar */}
         <header className={styles.topBar}>
-          <div className={styles.pageTitle}>{selectedMenu}</div>
+          <div className={styles.pageTitle}>Welcome, {profileData && profileData.fullName ? profileData.fullName : "Super-Admin"} - {selectedMenu}</div>
           <div
             className={styles.profileSection}
             onClick={() => setDropdownOpen(!dropdownOpen)}
           >
             <img
-              src="https://via.placeholder.com/40"
+              src={
+                profileData && profileData.profilePhoto
+                  ? `${SERVERHOST}${profileData.profilePhoto}`
+                  : ProfilePhoto || "https://via.placeholder.com/40"
+              }
               alt="Profile"
               className={styles.profileImage}
             />
             {dropdownOpen && (
               <div ref={dropdownRef} className={styles.dropdownMenu}>
-                <div className={styles.dropdownItem}>
+                <div className={styles.dropdownItem} onClick={handleProfileClick}>
                   <span className={styles.dropdownIcon}>👤</span> Profile
                 </div>
-                <div className={styles.dropdownItem}>
+                <div className={styles.dropdownItem} onClick={logout}>
                   <span className={styles.dropdownIcon}>🚪</span> Logout
                 </div>
               </div>
