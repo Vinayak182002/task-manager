@@ -14,6 +14,7 @@ import CreateNewTask from "./CreateNewTask";
 import AssignTaskToAdmin from "./AssignTaskToAdmin";
 import ManageAdmins from "./ManageAdmins";
 import ManageEmployees from "./ManageEmployees";
+import ChatBot from "./ChatBox";
 
 const SuperAdminDashboard = () => {
   useAuth();
@@ -60,8 +61,9 @@ const SuperAdminDashboard = () => {
 
   const menuItems = [
     { label: "Dashboard", icon: "🏠" },
-    { label: "Create Task", icon: "➕" },
-    { label: "Assign Task", icon: "➕" },
+    { label: "Create Task", icon: "🆕" },
+    { label: "Assign Task", icon: "✍️" },
+    { label: "Manage Tasks", icon: "📑" },
     { label: "Manage Admins", icon: "👤" },
     { label: "Manage Employees", icon: "👥" },
   ];
@@ -207,7 +209,7 @@ const SuperAdminDashboard = () => {
           </div>
         </header>
 
-        <div className={styles.contentArea}>{renderPage()}</div>
+        <div className={styles.contentArea}>{renderPage()} <ChatBot /></div>
 
         {modalOpen && (
           <div className={styles.modalOverlay}>

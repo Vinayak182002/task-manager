@@ -1,88 +1,118 @@
-const mongoose = require('mongoose');
-const path = require('path');
-const multer = require('multer');
+const mongoose = require("mongoose");
+const path = require("path");
+const multer = require("multer");
 
 // Task Schema
 const taskSchema = new mongoose.Schema(
   {
-    title: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    description: {
-      type: String,
-      required: true,
-      trim: true,
-    },
+    title: { type: String, required: true, trim: true },
+    description: { type: String, required: true, trim: true },
     status: {
       type: String,
-      enum: ['Pending', 'In-Progress', 'Completed', 'Rejected'],
-      default: 'Pending',
+      enum: ["Pending", "In-Progress", "Completed", "Rejected"],
+      default: "Pending",
     },
     priority: {
       type: String,
-      enum: ['Low', 'Medium', 'High'],
-      default: 'Medium',
+      enum: ["Low", "Medium", "High"],
+      default: "Medium",
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
-      refPath: 'createdByRole', // Dynamic reference for SuperAdmin or Admin
+      refPath: "createdByRole",
       required: true,
     },
     createdByRole: {
       type: String,
-      enum: ['SuperAdmin', 'Admin'],
+      enum: ["SuperAdmin", "Admin"],
       required: true,
     },
+    initiallyAssignedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      refPath: "initiallyAssignedByRole",
+    },
+    initiallyAssignedByRole: { type: String, enum: ["SuperAdmin"] },
     initiallyAssignedTo: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Admin', // The first admin assigned by the super-admin
+      ref: "Admin",
       default: null,
     },
+    initiallyAssignedToRole: { type: String, enum: ["Admin"] },
     assignedBy: {
       type: mongoose.Schema.Types.ObjectId,
-      refPath: 'assignedByRole',
+      refPath: "assignedByRole",
     },
-    assignedByRole: {
-      type: String,
-      enum: ['SuperAdmin', 'Admin'],
-    },
-    assignedTo: {
-      type: mongoose.Schema.Types.ObjectId,
-      refPath: 'assignedToRole', // Dynamic reference for Admin or Employee
-    },
-    assignedToRole: {
-      type: String,
-      enum: ['Admin', 'Employee'],
-    },
+    assignedByRole: { type: String, enum: ["Admin"] },
+    assignedTo: [
+      {
+        employeeId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Employee",
+          required: true,
+        },
+        department: {
+          type: String,
+          enum: [
+            "application",
+            "design",
+            "production",
+            "store",
+            "quality",
+            "purchase",
+          ],
+          required: true,
+        },
+      },
+    ],
+    assignedToRole: { type: String, enum: ["Employee"] },
     currentDepartment: {
       type: String,
-      enum: ['application', 'design', 'production', 'store', 'quality', 'purchase'],
+      enum: [
+        "application",
+        "design",
+        "production",
+        "store",
+        "quality",
+        "purchase",
+      ],
       required: true,
     },
     nextDepartment: {
       type: String,
-      enum: ['application', 'design', 'production', 'store', 'quality', 'purchase'],
+      enum: [
+        "application",
+        "design",
+        "production",
+        "store",
+        "quality",
+        "purchase",
+      ],
       default: null,
     },
     submissionFiles: [
       {
         uploadedBy: {
           type: mongoose.Schema.Types.ObjectId,
-          refPath: 'submissionFiles.uploadedByRole', // Dynamic reference for Employee or Admin
+          refPath: "submissionFiles.uploadedByRole",
           required: true,
         },
         uploadedByRole: {
           type: String,
-          enum: ['Employee', 'Admin'],
+          enum: ["SuperAdmin", "Employee", "Admin"],
           required: true,
         },
         fileName: { type: String, required: true },
         filePath: { type: String, required: true },
         department: {
           type: String,
-          enum: ['application', 'design', 'production', 'store', 'quality', 'purchase'],
+          enum: [
+            "application",
+            "design",
+            "production",
+            "store",
+            "quality",
+            "purchase",
+          ],
           required: true,
         },
         uploadedAt: { type: Date, default: Date.now },
@@ -92,85 +122,88 @@ const taskSchema = new mongoose.Schema(
       {
         department: {
           type: String,
-          enum: ['application', 'design', 'production', 'store', 'quality', 'purchase'],
+          enum: [
+            "application",
+            "design",
+            "production",
+            "store",
+            "quality",
+            "purchase",
+          ],
           required: true,
         },
-        approvedByAdmin: {
-          type: Boolean,
-          default: false,
-        },
-        approvedAt: {
-          type: Date,
-          default: null,
-        },
+        approvedByAdmin: { type: Boolean, default: false },
+        approvedAt: { type: Date, default: null },
       },
     ],
-
     rejections: [
-        {
-            department: {
-              type: String,
-              enum: ['application', 'design', 'production', 'store', 'quality', 'purchase'],
-              required: true,
-            },
-            rejectedByAdmin: {
-              type: Boolean,
-              default: false,
-            },
-            rejectionReason:{
-                type: String,
-                default: '',
-            },
-            rejectedAt: {
-              type: Date,
-              default: null,
-            },
-          },
+      {
+        department: {
+          type: String,
+          enum: [
+            "application",
+            "design",
+            "production",
+            "store",
+            "quality",
+            "purchase",
+          ],
+          required: true,
+        },
+        rejectedByAdmin: { type: Boolean, default: false },
+        rejectionReason: { type: String, default: "" },
+        rejectedAt: { type: Date, default: null },
+      },
     ],
     comments: [
       {
         userId: {
           type: mongoose.Schema.Types.ObjectId,
-          refPath: 'comments.userType',
+          refPath: "comments.userType",
           required: true,
         },
         userType: {
           type: String,
-          enum: ['SuperAdmin', 'Admin', 'Employee'],
+          enum: ["SuperAdmin", "Admin", "Employee"],
           required: true,
         },
         comment: { type: String, trim: true },
         createdAt: { type: Date, default: Date.now },
       },
     ],
-    deadline: {
-      type: Date,
-      required: true,
-    },
-    completedAt: {
-      type: Date,
-      default: null,
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
-    updatedAt: {
-      type: Date,
-      default: Date.now,
-    },
+    deadline: { type: Date, required: true },
+    completedAt: { type: Date, default: null },
+    updateLogs: [
+      {
+        updatedBy: {
+          type: mongoose.Schema.Types.ObjectId,
+          refPath: "updateLogs.updatedByRole",
+          required: true,
+        },
+        updatedByRole: {
+          type: String,
+          enum: ["SuperAdmin", "Admin", "Employee"],
+          required: true,
+        },
+        updateDescription: { type: String, required: true },
+        updatedAt: { type: Date, default: Date.now },
+      },
+    ],
   },
-  { timestamps: true } // Automatically adds createdAt and updatedAt fields
+  { timestamps: true }
 );
 
 // Multer Configuration for File Uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, '../uploads/tasks')); // Upload folder
+    cb(null, path.join(__dirname, "../uploads/tasks")); // Upload folder
   },
   filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(
+      null,
+      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname)
+    );
   },
 });
 
@@ -179,12 +212,18 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB max file size
   fileFilter: function (req, file, cb) {
     const allowedTypes = /jpeg|jpg|png|pdf|docx/;
-    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    const extname = allowedTypes.test(
+      path.extname(file.originalname).toLowerCase()
+    );
     const mimetype = allowedTypes.test(file.mimetype);
     if (extname && mimetype) {
       cb(null, true);
     } else {
-      cb(new Error('Only images (jpeg, jpg, png) and documents (pdf, docx) are allowed'));
+      cb(
+        new Error(
+          "Only images (jpeg, jpg, png) and documents (pdf, docx) are allowed"
+        )
+      );
     }
   },
 });
@@ -193,6 +232,6 @@ const upload = multer({
 module.exports.upload = upload;
 
 // Task Model
-const Task = mongoose.model('Task', taskSchema);
+const Task = mongoose.model("Task", taskSchema);
 
 module.exports.Task = Task;

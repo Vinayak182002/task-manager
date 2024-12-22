@@ -10,6 +10,8 @@ import { toast } from "react-toastify";
 // Importing individual page components
 import DashboardPage from "./DashboardPage";
 import Profile from "./Profile";
+import CreateNewTask from "./CreateNewTask";
+import AssignTask from "./AssignTask";
 import ManageTasks from "./ManageTasks";
 
 const AdminDashboard = ({ department }) => {
@@ -57,13 +59,8 @@ const AdminDashboard = ({ department }) => {
 
   const menuItems = [
     { label: "Dashboard", icon: "🏠" },
-    { label: "Manage Tasks", icon: "📋" },
-    { label: "Reports", icon: "📊" },
-    { label: "Reports", icon: "📊" },
-    { label: "Reports", icon: "📊" },
-    { label: "Reports", icon: "📊" },
-    { label: "Reports", icon: "📊" },
-    { label: "Reports", icon: "📊" },
+    { label: "Create Task", icon: "🆕" },
+    { label: "Assign Task", icon: "✍️" },
     { label: "Reports", icon: "📊" },
     { label: "Settings", icon: "⚙️" },
   ];
@@ -123,6 +120,10 @@ const AdminDashboard = ({ department }) => {
     switch (selectedMenu) {
       case "Dashboard":
         return <DashboardPage />;
+      case "Create Task":
+        return <CreateNewTask />;
+        case "Assign Task":
+        return <AssignTask />;
       case "Profile":
         return <Profile />;
       // case "Manage Tasks":

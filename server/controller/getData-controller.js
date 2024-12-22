@@ -56,6 +56,7 @@ const getAdminData = async (req, res) => {
   }
 };
 
+
 // Controller to get Employee data
 const getEmployeeData = async (req, res) => {
   try {
@@ -81,6 +82,43 @@ const getEmployeeData = async (req, res) => {
       .json({ success: false, message: "Server error", error: error.message });
   }
 };
+
+const getEmployeesForAdmin = async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+      return res
+        .status(401)
+        .json({ message: "Unauthorized: No token provided" });
+    }
+
+    // Decode the token
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET_KEY || "your_jwt_secret_key"
+    );
+
+    const admin = await Admin.findById(decoded.id);
+
+    if (!admin) {
+      return res.status(401).json({ message: "Forbidden: Only Admin can view employees." });
+    }
+
+    // Fetch employees belonging to the same department as the logged-in admin
+    const employees = await Employee.find({ department: admin.department });
+
+    if (!employees || employees.length === 0) {
+      return res.status(400).json({ message: "No employees found in your department." });
+    }
+
+    return res.status(200).json({ employees });
+  } catch (error) {
+    console.error("Error fetching employees:", error.message);
+    return res.status(500).json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
+
 
 // Controller to get all users by role
 const getAllUsersByRole = async (req, res) => {
@@ -115,4 +153,5 @@ module.exports = {
   getAdminData,
   getEmployeeData,
   getAllUsersByRole,
+  getEmployeesForAdmin,
 };

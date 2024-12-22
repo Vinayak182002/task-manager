@@ -31,11 +31,9 @@ const createTask = async (req, res) => {
 
     // If no user is found in either collection
     if (!user) {
-      return res
-        .status(401)
-        .json({
-          message: "Forbidden: Only Super Admin or Admin can create tasks.",
-        });
+      return res.status(401).json({
+        message: "Forbidden: Only Super Admin or Admin can create tasks.",
+      });
     }
 
     const { title, description, priority, deadline, currentDepartment } =
@@ -86,102 +84,96 @@ const assignTask = async (req, res) => {
         .json({ message: "Unauthorized: No token provided" });
     }
 
-    // Decode the token
     const decoded = jwt.verify(
       token,
       process.env.JWT_SECRET_KEY || "your_jwt_secret_key"
     );
 
-    // Search for the user in SuperAdmin or Admin collection
+    // Determine user role and retrieve user information
     let user = await SuperAdmin.findById(decoded.id);
-    let userRole = "SuperAdmin";
+    let userRole = user ? "SuperAdmin" : "Admin";
 
     if (!user) {
       user = await Admin.findById(decoded.id);
-      userRole = "Admin";
     }
 
-    // If no user is found in either collection
     if (!user) {
-      return res
-        .status(401)
-        .json({
-          message: "Forbidden: Only Super Admin or Admin can assign tasks.",
-        });
+      return res.status(401).json({ message: "Unauthorized: User not found" });
     }
 
-    const { taskId } = req.params; // Task ID from URL params
-    const { assignedToName } = req.body; // Only name of the user being assigned
+    const { taskId } = req.params;
+    const { assignedToIds } = req.body;
 
-    // Fetch the task to be assigned
+    if (!Array.isArray(assignedToIds) || assignedToIds.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "No admin or employee IDs provided for assignment." });
+    }
+
     const task = await Task.findById(taskId);
     if (!task) {
-      return res.status(400).json({ message: "Task not found." });
+      return res.status(404).json({ message: "Task not found" });
     }
 
-    // SuperAdmin assigning the task
-    if (task.createdByRole === "SuperAdmin" && userRole === "SuperAdmin") {
-      // Look for Admin by name
-      const admin = await Admin.findOne({ fullName: assignedToName });
+    if (userRole === "SuperAdmin") {
+      const admin = await Admin.findById(assignedToIds[0]);
       if (!admin) {
-        return res
-          .status(400)
-          .json({ message: "Admin not found with the provided name." });
+        return res.status(400).json({ message: "Admin not found." });
       }
 
-      // Update task fields for initial assignment
-      task.initiallyAssignedTo = admin._id; // Admin's ID
-      task.assignedBy = user._id;
-      task.assignedByRole = "SuperAdmin";
-      task.assignedToRole = "Admin";
+      task.initiallyAssignedTo = admin._id;
+      task.initiallyAssignedBy = user._id;
+      task.initiallyAssignedByRole = "SuperAdmin";
+      task.initiallyAssignedToRole = "Admin";
+      task.updateLogs.push({
+        updatedBy: user._id,
+        updatedByRole: "SuperAdmin",
+        updateDescription: `Assigned task to Admin: ${admin.fullName}`,
+      });
 
       await task.save();
-
-      return res.status(200).json({
-        message: "Task successfully assigned to Admin.",
-        task,
-      });
-    }
-
-    // Admin assigning the task
-    if (task.createdByRole === "Admin" && userRole === "Admin") {
-      // Look for Employee by name
-      const employee = await Employee.findOne({
-        fullName: assignedToName,
+      return res
+        .status(200)
+        .json({ message: "Task assigned successfully to Admin.", task });
+    } else if (userRole === "Admin") {
+      const employees = await Employee.find({
+        _id: { $in: assignedToIds },
         department: task.currentDepartment,
       });
-      if (!employee) {
+
+      if (employees.length === 0) {
         return res
           .status(400)
-          .json({
-            message:
-              "Employee not found in the current department with the provided name.",
-          });
+          .json({ message: "No valid employees found for assignment." });
       }
 
-      // Update task fields for assignment
+      const newAssignments = employees.map((employee) => ({
+        employeeId: employee._id,
+        department: task.currentDepartment,
+      }));
+
+      task.assignedTo.push(...newAssignments);
       task.assignedBy = user._id;
       task.assignedByRole = "Admin";
-      task.assignedTo = employee._id; // Employee's ID
       task.assignedToRole = "Employee";
+      task.updateLogs.push({
+        updatedBy: user._id,
+        updatedByRole: "Admin",
+        updateDescription: `Assigned task to Employees: ${employees
+          .map((emp) => emp.fullName)
+          .join(", ")}`,
+      });
 
       await task.save();
-
-      return res.status(200).json({
-        message: "Task successfully assigned to Employee.",
-        task,
-      });
+      return res
+        .status(200)
+        .json({ message: "Task assigned successfully to Employees.", task });
     }
 
-    // If none of the above conditions match
-    return res
-      .status(401)
-      .json({ message: "You are not authorized to assign this task." });
+    return res.status(403).json({ message: "Unauthorized to assign tasks." });
   } catch (error) {
     console.error("Error assigning task:", error.message);
-    return res
-      .status(500)
-      .json({ message: "Internal Server Error", error: error.message });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
@@ -211,19 +203,18 @@ const getTasksByCreator = async (req, res) => {
 
     // If no user is found in either collection
     if (!user) {
-      return res
-        .status(401)
-        .json({
-          message: "Forbidden: Only Super Admin or Admin can view tasks.",
-        });
+      return res.status(401).json({
+        message: "Forbidden: Only Super Admin or Admin can view tasks.",
+      });
     }
 
     // Fetch tasks created by the logged-in user
-    const tasks = await Task.find({ createdBy: user._id, createdByRole })
-      .sort({ createdAt: -1 }) // Sort tasks by creation date (most recent first)
+    const tasks = await Task.find({ createdBy: user._id, createdByRole }).sort({
+      createdAt: -1,
+    }); // Sort tasks by creation date (most recent first)
 
     if (!tasks || tasks.length === 0) {
-      return res.status(404).json({ message: "No tasks found." });
+      return res.status(400).json({ message: "No tasks found." });
     }
 
     return res.status(200).json({
@@ -238,9 +229,80 @@ const getTasksByCreator = async (req, res) => {
   }
 };
 
+const getTasksAssignedToAdmin = async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+      return res
+        .status(401)
+        .json({ message: "Unauthorized: No token provided" });
+    }
+
+    // Decode the token
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET_KEY || "your_jwt_secret_key"
+    );
+
+    user = await Admin.findById(decoded.id);
+
+    // If no user is found in either collection
+    if (!user) {
+      return res.status(401).json({
+        message: "Forbidden: Only Admin can view tasks.",
+      });
+    }
+
+    // Fetch tasks created by the logged-in user
+    const tasks = await Task.find({ initiallyAssignedTo : user._id }).sort({
+      createdAt: -1,
+    }); // Sort tasks by creation date (most recent first)
+
+    if (!tasks || tasks.length === 0) {
+      return res.status(400).json({ message: "No tasks found." });
+    }
+
+    return res.status(200).json({
+      message: "Tasks fetched successfully.",
+      tasks,
+    });
+  } catch (error) {
+    console.error("Error fetching tasks:", error.message);
+    return res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
+const getAssignedEmployeesForTask = async (req, res) => {
+  const { taskId } = req.params;
+
+  try {
+    // Find the task by its ID and populate the assignedTo field to get employee details
+    const task = await Task.findById(taskId).populate({
+      path: "assignedTo.employeeId",
+      select: "fullName email", // Select the fields you need for employees
+    });
+
+    if (!task) {
+      return res.status(404).json({ message: "Task not found." });
+    }
+
+    // Extract the assigned employees
+    const assignedEmployees = task.assignedTo.map((assignment) => assignment.employeeId);
+
+    return res.status(200).json({ employees: assignedEmployees });
+  } catch (error) {
+    console.error("Error fetching assigned employees:", error.message);
+    return res.status(500).json({ message: "Error fetching assigned employees." });
+  }
+};
+
 // Export the controllers
 module.exports = {
   createTask,
   assignTask,
   getTasksByCreator,
+  getTasksAssignedToAdmin,
+  getAssignedEmployeesForTask,
 };

@@ -7,9 +7,8 @@ import { SERVERHOST } from "../../../constants/constant";
 const AssignTaskToAdmin = () => {
   const [tasks, setTasks] = useState([]);
   const [admins, setAdmins] = useState([]);
-  const [adminDetails, setAdminDetails] = useState({}); // State to store admin details
   const [selectedTask, setSelectedTask] = useState(null);
-  const [selectedAdmin, setSelectedAdmin] = useState("");
+  const [selectedAdminId, setSelectedAdminId] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
@@ -27,11 +26,10 @@ const AssignTaskToAdmin = () => {
           },
         }
       );
-      setTasks(response.data.tasks || []); // Fallback to an empty array if no tasks
+      setTasks(response.data.tasks || []);
     } catch (error) {
       console.error("Error fetching tasks:", error.response?.data || error.message);
-      toast.error("Failed to fetch tasks.");
-      setTasks([]); // Set to an empty array on error
+      setTasks([]);
     }
   };
 
@@ -41,14 +39,7 @@ const AssignTaskToAdmin = () => {
       const response = await axios.get(
         `${SERVERHOST}/api/task-manager-app/auth/get-data/get-all-users-by-role/${role}`
       );
-      setAdmins(response.data.data);
-
-      // Create a mapping of admin IDs to fullNames
-      const adminMap = response.data.data.reduce((acc, admin) => {
-        acc[admin._id] = admin.fullName;
-        return acc;
-      }, {});
-      setAdminDetails(adminMap);  // Store the mapping
+      setAdmins(response.data.data || []);
     } catch (error) {
       console.error("Error fetching admins:", error.response?.data || error.message);
       toast.error("Failed to fetch admins.");
@@ -56,49 +47,47 @@ const AssignTaskToAdmin = () => {
   };
 
   const handleAssignTask = async () => {
-    if (!selectedTask || !selectedAdmin) {
+    if (!selectedTask || !selectedAdminId) {
       toast.error("Please select a task and an admin.");
       return;
     }
 
     try {
-      const response = await axios.post(
-        `${SERVERHOST}/api/task-manager-app/auth/tasks/assign-task/${selectedTask._id}`, // Use task._id
-        { assignedToName: selectedAdmin },
+      await axios.post(
+        `${SERVERHOST}/api/task-manager-app/auth/tasks/assign-task/${selectedTask._id}`,
+        { assignedToIds: [selectedAdminId] },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("tokenSuperAdmin")}`,
+            "Content-Type": "application/json",
           },
         }
       );
-
       toast.success("Task assigned successfully.");
-      fetchTasks(); // Refresh tasks after assignment
+      fetchTasks();
       setSelectedTask(null);
-      setSelectedAdmin("");
-      setIsModalOpen(false); // Close the modal after assigning the task
+      setSelectedAdminId("");
+      setIsModalOpen(false);
     } catch (error) {
       console.error("Error assigning task:", error.response?.data || error.message);
       toast.error(error.response?.data?.message || "Failed to assign the task.");
     }
   };
 
-  const openModal = (taskId) => {
-    const task = tasks.find(t => t._id === taskId); // Find the task by its ID
-    setSelectedTask(task); // Set the whole task object
+  const openModal = (task) => {
+    setSelectedTask(task);
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedTask(null);
-    setSelectedAdmin("");
+    setSelectedAdminId("");
   };
 
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Assign Tasks to Admin</h1>
-
       <table className={styles.table}>
         <thead>
           <tr>
@@ -111,7 +100,7 @@ const AssignTaskToAdmin = () => {
           </tr>
         </thead>
         <tbody>
-          {tasks && tasks.length > 0 ? (
+          {tasks.length > 0 ? (
             tasks.map((task, index) => (
               <tr key={task._id}>
                 <td>{index + 1}</td>
@@ -122,12 +111,17 @@ const AssignTaskToAdmin = () => {
                 <td>
                   {task.initiallyAssignedTo ? (
                     <span>
-                      Already assigned to {adminDetails[task.initiallyAssignedTo] || "Unknown Admin"}
+                      Already Assigned to{" "}
+                      {
+                        admins.find((admin) => admin._id === task.initiallyAssignedTo)
+                          ? admins.find((admin) => admin._id === task.initiallyAssignedTo).fullName
+                          : "Admin not found"
+                      }
                     </span>
                   ) : (
                     <button
                       className={styles.assignButton}
-                      onClick={() => openModal(task._id)} // Pass task ID to open the modal
+                      onClick={() => openModal(task)}
                     >
                       Assign Task
                     </button>
@@ -148,30 +142,26 @@ const AssignTaskToAdmin = () => {
       {isModalOpen && selectedTask && (
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
-            <h3>Select Admin for Task: {selectedTask.title}</h3> {/* Display task title */}
-            <div className={styles.dropdownContainer}>
-              <label htmlFor="adminDropdown">Choose an Admin: </label>
-              <select
-                id="adminDropdown"
-                value={selectedAdmin}
-                onChange={(e) => setSelectedAdmin(e.target.value)}
-                className={styles.selectDropdown}
-              >
-                <option value="">Select Admin</option>
-                {Array.isArray(admins) && admins.length > 0 ? (
-                  admins.map((admin) => (
-                    <option key={admin._id} value={admin.fullName}>
-                      {admin.fullName} - {admin.department} Department
-                    </option>
-                  ))
-                ) : (
-                  <option disabled>No admins available</option>
-                )}
-              </select>
-              <button className={styles.submitButton} onClick={handleAssignTask}>
-                Assign it!
-              </button>
-            </div>
+            <h3>Assign Task: {selectedTask.title}</h3>
+            <label htmlFor="adminDropdown">Choose Admin:</label>
+            <select
+              id="adminDropdown"
+              value={selectedAdminId}
+              onChange={(e) => setSelectedAdminId(e.target.value)}
+              className={styles.selectDropdown}
+            >
+              <option value="">Select Admin</option>
+              {admins
+                .filter((admin) => admin.department === selectedTask.currentDepartment) // Only show admins from the same department as the task
+                .map((admin) => (
+                  <option key={admin._id} value={admin._id}>
+                    {admin.fullName}
+                  </option>
+                ))}
+            </select>
+            <button className={styles.submitButton} onClick={handleAssignTask}>
+              Assign
+            </button>
             <button className={styles.closeModalButton} onClick={closeModal}>
               Close
             </button>

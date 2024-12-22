@@ -1,0 +1,189 @@
+/* Container for the AssignTask component */
+.container {
+  padding: 20px;
+  background-color: #f4f7fc;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Title styling */
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Task list styles */
+.taskList {
+  margin-bottom: 30px;
+}
+
+.taskList h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+/* Task table styles */
+.taskTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.taskTable th,
+.taskTable td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.taskTable th {
+  background-color: #f4f7fc;
+  font-weight: 600;
+}
+
+.assignButton {
+  background-color: #007bff;
+  color: white;
+  padding: 8px 15px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: 500;
+}
+
+.assignButton:hover {
+  background-color: #0056b3;
+}
+
+/* Modal styling */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal content */
+.modalContent {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  width: 70%;
+  max-width: 600px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+/* Modal heading */
+.modalContent h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Label styling for modal */
+.modalContent label {
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: #555;
+  display: block;
+}
+
+/* Styling for the list of checkboxes */
+.checkboxList {
+  max-height: 250px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+}
+
+/* Individual checkbox styling */
+.checkboxItem {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.checkboxItem input[type="checkbox"] {
+  margin-right: 12px;
+  cursor: pointer;
+}
+
+.checkboxItem label {
+  font-size: 15px;
+  color: #555;
+}
+
+/* Modal action buttons */
+.modalActions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.cancelButton,
+.assignButton {
+  padding: 12px 25px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: 600;
+}
+
+.cancelButton {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.cancelButton:hover {
+  background-color: #ccc;
+}
+
+.assignButton {
+  background-color: #28a745;
+  color: white;
+}
+
+.assignButton:hover {
+  background-color: #218838;
+}
+
+/* Hover effect for task rows */
+.taskTable tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .taskTable th,
+  .taskTable td {
+    padding: 10px;
+  }
+
+  .modalContent {
+    width: 90%;
+    padding: 20px;
+  }
+
+  .modalActions {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .assignButton,
+  .cancelButton {
+    width: 100%;
+    padding: 15px;
+  }
+}

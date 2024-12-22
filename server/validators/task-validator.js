@@ -16,8 +16,9 @@ const createTaskSchema = z.object({
 
 // Zod schema for assigning a task
 const assignTaskSchema = z.object({
-    // taskId: z.string().min(1, 'Task ID is required'), // Task ID should be a valid string
-    assignedToName: z.string().min(1, 'Assigned user name is required'), // Name should be a non-empty string
+  assignedToIds: z
+  .array(z.string().min(1, "Invalid ID format")) // Ensure each ID is a non-empty string
+  .nonempty("At least one ID must be provided"), // Ensure the array is not empty
   });
 
 module.exports = {
