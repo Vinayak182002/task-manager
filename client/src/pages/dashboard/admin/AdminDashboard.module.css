@@ -248,6 +248,16 @@
   .purchase {
     --sidebar-bg-color: #00071c;  /* Professional Blue */
   }
+
+  .maintenance
+  {
+    --sidebar-bg-color: #042da8;
+  }
+  
+  .services
+  {
+    --sidebar-bg-color: #1e263b;
+  }
   
 
  /* Modal Overlay */

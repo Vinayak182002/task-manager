@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import SuperAdminRegister from "./pages/registration/SuperAdminRegister";
 import SuperAdminLogin from "./pages/login/superAdminLogin";
 import AdminLogin from "./pages/login/AdminLogin";
@@ -44,6 +45,8 @@ const App = () => {
           <Route path="/store-admin-dashboard" element={<AdminDashboard department="store"/>} />
           <Route path="/quality-admin-dashboard" element={<AdminDashboard department="quality"/>} />
           <Route path="/purchase-admin-dashboard" element={<AdminDashboard department="purchase"/>} />
+          <Route path="/maintenance-admin-dashboard" element={<AdminDashboard department="maintenance"/>} />
+          <Route path="/services-admin-dashboard" element={<AdminDashboard department="services"/>} />
           <Route path="/application-employee-dashboard" element={<EmployeeDashboard department="application" />} />
           <Route path="/design-employee-dashboard" element={<EmployeeDashboard department="design" />} />
           <Route path="/production-employee-dashboard" element={<EmployeeDashboard department="production" />} />

@@ -141,6 +141,8 @@ const AdminDashboard = ({ department }) => {
       store: "#112661", // Pink
       quality: "#06153f", // Orange
       purchase: "#00071c", // Light Blue
+      maintenance: "#042da8",
+      services: "#1e263b",
     };
     return themes[department] || "#333";
   };

@@ -15,6 +15,7 @@ import AssignTaskToAdmin from "./AssignTaskToAdmin";
 import ManageAdmins from "./ManageAdmins";
 import ManageEmployees from "./ManageEmployees";
 import ChatBot from "./ChatBox";
+import CreateNewProject from "./CreateNewProject";
 
 const SuperAdminDashboard = () => {
   useAuth();
@@ -61,6 +62,7 @@ const SuperAdminDashboard = () => {
 
   const menuItems = [
     { label: "Dashboard", icon: "🏠" },
+    { label: "Create Project", icon: "🆕" },
     { label: "Create Task", icon: "🆕" },
     { label: "Assign Task", icon: "✍️" },
     { label: "Manage Tasks", icon: "📑" },
@@ -72,6 +74,8 @@ const SuperAdminDashboard = () => {
     switch (selectedMenu) {
       case "Dashboard":
         return <DashboardPage />;
+      case "Create Project":
+        return <CreateNewProject />;
       case "Create Task":
         return <CreateNewTask />;
       case "Assign Task":
@@ -109,17 +113,20 @@ const SuperAdminDashboard = () => {
     }
 
     try {
-      const response = await fetch(`${SERVERHOST}/api/task-manager-app/auth/change-sa-password`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("tokenSuperAdmin")}`,
-        },
-        body: JSON.stringify({
-          oldPassword,
-          newPassword,
-        }),
-      });
+      const response = await fetch(
+        `${SERVERHOST}/api/task-manager-app/auth/change-sa-password`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("tokenSuperAdmin")}`,
+          },
+          body: JSON.stringify({
+            oldPassword,
+            newPassword,
+          }),
+        }
+      );
       const data = await response.json();
 
       if (response.ok) {
@@ -199,7 +206,8 @@ const SuperAdminDashboard = () => {
                   className={styles.dropdownItem}
                   onClick={openChangePasswordModal}
                 >
-                  <span className={styles.dropdownIcon}>🔑</span> Change Password
+                  <span className={styles.dropdownIcon}>🔑</span> Change
+                  Password
                 </div>
                 <div className={styles.dropdownItem} onClick={logout}>
                   <span className={styles.dropdownIcon}>🚪</span> Logout
@@ -209,7 +217,9 @@ const SuperAdminDashboard = () => {
           </div>
         </header>
 
-        <div className={styles.contentArea}>{renderPage()} <ChatBot /></div>
+        <div className={styles.contentArea}>
+          {renderPage()} <ChatBot />
+        </div>
 
         {modalOpen && (
           <div className={styles.modalOverlay}>

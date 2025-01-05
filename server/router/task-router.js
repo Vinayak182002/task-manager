@@ -4,6 +4,8 @@ const zodSchema = require("../validators/task-validator");
 const validate = require("../middlewares/auth-middleware");
 const taskControllers = require("../controller/taskData-controller");
 router1.route("/create-task").post(validate(zodSchema.createTaskSchema),taskControllers.createTask);
+router1.route("/create-project").post(validate(zodSchema.createProjectSchema),taskControllers.createProject);
+router1.route("/get-projects").get(taskControllers.getProjects);
 router1.route("/assign-task/:taskId").post(validate(zodSchema.assignTaskSchema),taskControllers.assignTask);
 router1.route("/get-tasks-by-creator").get(taskControllers.getTasksByCreator);
 router1.route("/get-tasks-assigned-to-admin").get(taskControllers.getTasksAssignedToAdmin);

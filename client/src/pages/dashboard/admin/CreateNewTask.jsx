@@ -10,9 +10,35 @@ const CreateNewTask = () => {
     title: "",
     description: "",
     priority: "Medium",
-    deadline: "",
     currentDepartment: "",
+    projectId: "",
+    departmentDeadlines: {}, // Object to store deadlines for each department
   });
+
+  const [projects, setProjects] = useState([]); // Store projects fetched from backend
+
+  // Fetch all projects from backend
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await axios.get(`${SERVERHOST}/api/task-manager-app/auth/tasks/get-projects`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("tokenAdmin")}`,
+          },
+        });
+
+        if (response.status === 200) {
+          setProjects(response.data.projects); // Assuming response.data.projects contains an array of { _id, name }
+        }
+      } catch (error) {
+        console.error("Error fetching projects:", error.response?.data || error.message);
+        toast.error("Failed to fetch projects.");
+      }
+    };
+
+    fetchProjects();
+  }, []);
+
   const [adminDepartment, setAdminDepartment] = useState(""); // New state for admin's department
 
   // Fetch the logged-in admin's department
@@ -40,12 +66,34 @@ const CreateNewTask = () => {
     setTaskData({ ...taskData, [name]: value });
   };
 
+  const handleDeadlineChange = (e, department) => {
+    setTaskData({
+      ...taskData,
+      departmentDeadlines: {
+        ...taskData.departmentDeadlines,
+        [department]: e.target.value,
+      },
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
+    // Convert departmentDeadlines object to an array
+    const departmentDeadlinesArray = Object.keys(taskData.departmentDeadlines).map((department) => ({
+      department,
+      deadline: taskData.departmentDeadlines[department],
+    }));
+  
+    const updatedTaskData = {
+      ...taskData,
+      departmentDeadlines: departmentDeadlinesArray,
+    };
+  
     try {
       const response = await axios.post(
         `${SERVERHOST}/api/task-manager-app/auth/tasks/create-task`,
-        taskData,
+        updatedTaskData,
         {
           headers: {
             "Content-Type": "application/json",
@@ -53,7 +101,7 @@ const CreateNewTask = () => {
           },
         }
       );
-
+  
       if (response.status === 200) {
         toast.success("Task created successfully!");
         setTaskData({
@@ -61,9 +109,10 @@ const CreateNewTask = () => {
           description: "",
           priority: "Medium",
           deadline: "",
-          currentDepartment: "", // Reset the department
+          currentDepartment: "",
+          projectId: "",
+          departmentDeadlines: {},
         });
-        fetchData();
       }
     } catch (error) {
       console.error("Error creating task:", error.response?.data || error.message);
@@ -72,6 +121,7 @@ const CreateNewTask = () => {
       );
     }
   };
+  
 
   return (
     <div className={styles.container}>
@@ -86,6 +136,7 @@ const CreateNewTask = () => {
             value={taskData.title}
             onChange={handleInputChange}
             placeholder="Enter task title"
+            required
           />
         </div>
 
@@ -98,6 +149,7 @@ const CreateNewTask = () => {
             onChange={handleInputChange}
             placeholder="Enter task description"
             rows="4"
+            required
           ></textarea>
         </div>
 
@@ -115,26 +167,70 @@ const CreateNewTask = () => {
           </select>
         </div>
 
+        {/* Project Selection */}
         <div className={styles.formGroup}>
-          <label htmlFor="deadline">Deadline</label>
-          <input
-            type="date"
-            id="deadline"
-            name="deadline"
-            value={taskData.deadline}
+          <label htmlFor="projectId">Project</label>
+          <select
+            id="projectId"
+            name="projectId"
+            value={taskData.projectId}
             onChange={handleInputChange}
-          />
+            required
+          >
+            <option value="">Select Project</option>
+            {projects.map((project) => (
+              <option key={project._id} value={project._id}>
+                {project.name}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className={styles.formGroup}>
           <label htmlFor="currentDepartment">Current Department</label>
-          <input
+          <select
             id="currentDepartment"
             name="currentDepartment"
             value={adminDepartment}
-            disabled // Disable the department field, but still use the value
-          />
+            disabled
+          >
+            <option value="">Select Department</option>
+            <option value="application">Application</option>
+            <option value="design">Design</option>
+            <option value="production">Production</option>
+            <option value="store">Store</option>
+            <option value="quality">Quality</option>
+            <option value="purchase">Purchase</option>
+            <option value="maintenance">Maintenance</option>
+            <option value="services">Services</option>
+          </select>
         </div>
+
+        {/* Department Deadlines */}
+        <h3 className={styles.sectionTitle}>Set Deadlines for Departments</h3>
+        {[
+          "application",
+          "design",
+          "production",
+          "store",
+          "quality",
+          "purchase",
+          "maintenance",
+          "services",
+        ].map((department) => (
+          <div key={department} className={styles.formGroup}>
+            <label htmlFor={`deadline-${department}`}>
+              {department.charAt(0).toUpperCase() + department.slice(1)} Deadline
+            </label>
+            <input
+              type="date"
+              id={`deadline-${department}`}
+              name={`deadline-${department}`}
+              value={taskData.departmentDeadlines[department] || ""}
+              onChange={(e) => handleDeadlineChange(e, department)}
+            />
+          </div>
+        ))}
 
         <button type="submit" className={styles.submitButton}>
           Create Task

@@ -21,6 +21,8 @@ const ManageAdmins = () => {
     "Store",
     "Quality",
     "Purchase",
+    "Maintenance",
+    "Services"
   ];
 
   useEffect(() => {

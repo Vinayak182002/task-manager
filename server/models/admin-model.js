@@ -37,7 +37,7 @@ const adminSchema = new mongoose.Schema(
     },
     department: {
       type: String,
-      enum: ['application', 'design', 'production', 'store', 'quality', 'purchase'],
+      enum: ['application', 'design', 'production', 'store', 'quality', 'purchase','maintenance','services'],
       required: true,
     },
     description: {

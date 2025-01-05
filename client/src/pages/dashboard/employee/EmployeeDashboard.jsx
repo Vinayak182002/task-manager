@@ -132,6 +132,8 @@ const EmployeeDashboard = ({ department }) => {
       store: "#112661", // Pink
       quality: "#06153f", // Orange
       purchase: "#00071c", // Light Blue
+      maintenance: "#001142",
+      services: "#09163a",
     };
     return themes[department] || "#333";
   };
