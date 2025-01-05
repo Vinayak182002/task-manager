@@ -12,7 +12,7 @@ const AssignTask = () => {
   const [showModal, setShowModal] = useState(false); // To control modal visibility
   const [selectedTaskId, setSelectedTaskId] = useState(null); // The task to assign employees to
   const [assignedEmployeesForTask, setAssignedEmployeesForTask] = useState([]); // List of employees already assigned to the task
-
+  const [projects, setProjects] = useState([]); // Store projects here
   // Fetch tasks created by the logged-in admin
   useEffect(() => {
     const fetchTasks = async () => {
@@ -36,6 +36,7 @@ const AssignTask = () => {
     };
 
     fetchTasks();
+    fetchProjects();
   }, []);
 
   // Fetch tasks assigned to the logged-in admin
@@ -115,6 +116,22 @@ const AssignTask = () => {
     }
   }, [selectedTaskId]);
 
+  const fetchProjects = async () => {
+    try {
+      const response = await axios.get(
+        `${SERVERHOST}/api/task-manager-app/auth/tasks/get-projects`
+      );
+
+      setProjects(response.data.projects || []);
+    } catch (error) {
+      console.error(
+        "Error fetching projects:",
+        error.response?.data || error.message
+      );
+      toast.error("Failed to fetch projects.");
+    }
+  };
+
   // Handle selection of employees with checkboxes
   const handleEmployeeSelection = (e) => {
     const employeeId = e.target.value;
@@ -162,6 +179,11 @@ const AssignTask = () => {
     }
   };
 
+  const getProjectName = (projectID) => {
+    const project = projects.find((proj) => proj._id === projectID);
+    return project ? project.name : "Project not found";
+  };
+
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Admin Dashboard</h1>
@@ -178,6 +200,7 @@ const AssignTask = () => {
                 <th>Sr. No.</th>
                 <th>Title</th>
                 <th>Description</th>
+                <th>Project Name</th>
                 <th>Status</th>
                 <th>Priority</th>
                 <th>Action</th>
@@ -189,6 +212,7 @@ const AssignTask = () => {
                   <td>{index + 1}</td>
                   <td>{task.title}</td>
                   <td>{task.description}</td>
+                  <td>{getProjectName(task.projectId)}</td>
                   <td>{task.status}</td>
                   <td>{task.priority}</td>
                   <td>
@@ -196,7 +220,8 @@ const AssignTask = () => {
                       className={styles.assignButton}
                       onClick={() => openAssignTaskModal(task._id)}
                     >
-                      {task.assignedEmployees && task.assignedEmployees.length > 0
+                      {task.assignedEmployees &&
+                      task.assignedEmployees.length > 0
                         ? "Assign this task to more employees"
                         : "Assign Task"}
                     </button>
@@ -220,6 +245,7 @@ const AssignTask = () => {
                 <th>Sr. No.</th>
                 <th>Title</th>
                 <th>Description</th>
+                <th>Project Name</th>
                 <th>Status</th>
                 <th>Priority</th>
                 <th>Action</th>
@@ -231,6 +257,7 @@ const AssignTask = () => {
                   <td>{index + 1}</td>
                   <td>{task.title}</td>
                   <td>{task.description}</td>
+                  <td>{getProjectName(task.projectId)}</td>
                   <td>{task.status}</td>
                   <td>{task.priority}</td>
                   <td>
@@ -238,7 +265,8 @@ const AssignTask = () => {
                       className={styles.assignButton}
                       onClick={() => openAssignTaskModal(task._id)}
                     >
-                      {task.assignedEmployees && task.assignedEmployees.length > 0
+                      {task.assignedEmployees &&
+                      task.assignedEmployees.length > 0
                         ? "Assign this task to more employees"
                         : "Assign Task"}
                     </button>

@@ -62,35 +62,6 @@ const createProject = async (req, res) => {
 
 const getProjects = async (req, res) => {
   try {
-    const token = req.headers.authorization?.split(" ")[1];
-    if (!token) {
-      return res
-        .status(401)
-        .json({ message: "Unauthorized: No token provided" });
-    }
-
-    // Decode the token
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET_KEY || "your_jwt_secret_key"
-    );
-
-    // Search for the user in SuperAdmin or Admin collection
-    let user = await SuperAdmin.findById(decoded.id);
-    let createdByRole = "SuperAdmin";
-
-    if (!user) {
-      user = await Admin.findById(decoded.id);
-      createdByRole = "Admin";
-    }
-
-    // If no user is found in either collection
-    if (!user) {
-      return res.status(401).json({
-        message: "Forbidden: Only Super Admin or Admin can view projects.",
-      });
-    }
-
     // Fetch tasks created by the logged-in user
     const projects = await Project.find().sort({
       createdAt: -1,
@@ -111,8 +82,6 @@ const getProjects = async (req, res) => {
       .json({ message: "Internal Server Error", error: error.message });
   }
 };
-
-
 
 // Controller to create a new task
 const createTask = async (req, res) => {
@@ -413,6 +382,53 @@ const getAssignedEmployeesForTask = async (req, res) => {
   }
 };
 
+const getTasksByEmployee = async (req, res) => {
+  const { employeeId } = req.params; // Get the employeeId from the request parameters
+
+  try {
+    // Find tasks where employeeId is in the assignedTo array
+    const tasks = await Task.find({
+      "assignedTo.employeeId": employeeId, // Match the employeeId in the assignedTo array
+    });
+    // .populate([
+    //   { path: "assignedTo.employeeId", select: "name email" }, // Populate employee details (e.g., name, email)
+    //   { path: "assignedBy", select: "name email" }, // Populate assignedBy details (e.g., name, email)
+    //   { path: "projectId", select: "title" }, // Populate the project details (e.g., project title)
+    // ]);
+
+    if (!tasks || tasks.length === 0) {
+      return res.status(404).json({ message: "No tasks found for this employee" });
+    }
+
+    // Send the tasks in the response
+    res.status(200).json({ tasks });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error while fetching tasks" });
+  }
+};
+
+const getTasksByProject = async (req, res) => {
+  const { projectId } = req.params; // Get the employeeId from the request parameters
+
+  try {
+    // Find tasks where employeeId is in the assignedTo array
+    const tasks = await Task.find({
+      "projectId": projectId, // Match the employeeId in the assignedTo array
+    });
+
+    if (!tasks || tasks.length === 0) {
+      return res.status(404).json({ message: "No tasks found for this project" });
+    }
+
+    // Send the tasks in the response
+    res.status(200).json({ tasks });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error while fetching tasks" });
+  }
+};
+
 // Export the controllers
 module.exports = {
   createProject,
@@ -422,4 +438,6 @@ module.exports = {
   getTasksAssignedToAdmin,
   getAssignedEmployeesForTask,
   getProjects,
+  getTasksByEmployee,
+  getTasksByProject
 };

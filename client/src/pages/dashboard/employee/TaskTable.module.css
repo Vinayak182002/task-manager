@@ -1,0 +1,56 @@
+.taskTableContainer {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+}
+
+.taskTableTitle {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.projectSelectContainer {
+  margin-bottom: 20px;
+}
+
+.projectDropdown {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  /* width: 600px; */
+  width: 100%;
+  background-color: #f9f9f9;
+}
+
+.tableResponsive {
+  overflow-x: auto;
+}
+
+.taskTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.taskTable th,
+.taskTable td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+.taskTable th {
+  background-color: #f1f1f1;
+}
+
+.taskTable tr:hover {
+  cursor: pointer;
+  background-color: #f9f9f9;
+}
+
+.noTasks {
+  text-align: center;
+  font-style: italic;
+  color: #666;
+}

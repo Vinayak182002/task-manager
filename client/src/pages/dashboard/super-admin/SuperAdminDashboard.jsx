@@ -16,6 +16,7 @@ import ManageAdmins from "./ManageAdmins";
 import ManageEmployees from "./ManageEmployees";
 import ChatBot from "./ChatBox";
 import CreateNewProject from "./CreateNewProject";
+import TaskTable from "./TaskTable";
 
 const SuperAdminDashboard = () => {
   useAuth();
@@ -65,7 +66,7 @@ const SuperAdminDashboard = () => {
     { label: "Create Project", icon: "🆕" },
     { label: "Create Task", icon: "🆕" },
     { label: "Assign Task", icon: "✍️" },
-    { label: "Manage Tasks", icon: "📑" },
+    { label: "View Tasks", icon: "📑" },
     { label: "Manage Admins", icon: "👤" },
     { label: "Manage Employees", icon: "👥" },
   ];
@@ -80,6 +81,8 @@ const SuperAdminDashboard = () => {
         return <CreateNewTask />;
       case "Assign Task":
         return <AssignTaskToAdmin />;
+      case "View Tasks":
+        return <TaskTable />;
       case "Manage Admins":
         return <ManageAdmins />;
       case "Manage Employees":

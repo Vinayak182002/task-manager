@@ -13,6 +13,8 @@ import Profile from "./Profile";
 import CreateNewTask from "./CreateNewTask";
 import AssignTask from "./AssignTask";
 import ManageTasks from "./ManageTasks";
+import ManageEmployees from "./ManageEmployees";
+import CreateNewProject from "./CreateNewProject";
 
 const AdminDashboard = ({ department }) => {
   const navigate = useNavigate();
@@ -59,10 +61,10 @@ const AdminDashboard = ({ department }) => {
 
   const menuItems = [
     { label: "Dashboard", icon: "🏠" },
+    { label: "Create Project", icon: "🆕" },
     { label: "Create Task", icon: "🆕" },
     { label: "Assign Task", icon: "✍️" },
-    { label: "Reports", icon: "📊" },
-    { label: "Settings", icon: "⚙️" },
+    { label: "Manage Employees", icon: "👥" },
   ];
 
   const logout = () => {
@@ -120,10 +122,14 @@ const AdminDashboard = ({ department }) => {
     switch (selectedMenu) {
       case "Dashboard":
         return <DashboardPage />;
+      case "Create Project":
+        return <CreateNewProject />;
       case "Create Task":
         return <CreateNewTask />;
-        case "Assign Task":
+      case "Assign Task":
         return <AssignTask />;
+      case "Manage Employees":
+        return <ManageEmployees />;
       case "Profile":
         return <Profile />;
       // case "Manage Tasks":

@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import DahboardPage from "./DashboardPage";
 import Profile from "./Profile";
 import useAuthEmployee from "../../../constants/useAuthEmployee";
+import TaskTable from "./TaskTable";
 
 const EmployeeDashboard = ({ department }) => {
   useAuthEmployee();
@@ -57,9 +58,6 @@ const EmployeeDashboard = ({ department }) => {
   const menuItems = [
     { label: "Dashboard", icon: "🏠" },
     { label: "Tasks", icon: "📋" },
-    { label: "Reports", icon: "📊" },
-    { label: "Profile", icon: "👤" },
-    { label: "Settings", icon: "⚙️" },
   ];
 
   // Function to render the selected page dynamically
@@ -67,6 +65,8 @@ const EmployeeDashboard = ({ department }) => {
     switch (selectedMenu) {
       case "Dashboard":
         return <DahboardPage />;
+        case "Tasks":
+          return <TaskTable />;
       case "Profile":
         return <Profile />;
       default:

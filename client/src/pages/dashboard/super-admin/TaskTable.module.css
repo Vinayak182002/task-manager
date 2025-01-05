@@ -1,0 +1,125 @@
+.taskTableContainer {
+  margin: 20px;
+  font-family: 'Arial', sans-serif;
+}
+
+.taskTableTitle {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.projectDropdown {
+  margin: 20px 0;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: 100%;
+}
+
+.tableResponsive {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.taskTable {
+  width: 100%;
+  min-width: 1000px; /* Adjust as needed */
+  border-collapse: collapse;
+  border: 1px solid #ddd;
+  table-layout: auto; /* Allows flexible column widths */
+}
+
+.taskTable th,
+.taskTable td {
+  padding: 12px 15px;
+  text-align: left;
+  word-wrap: break-word; /* Ensures long text breaks properly */
+  white-space: nowrap; /* Prevents text from wrapping inside cells */
+}
+
+.taskTable th {
+  background-color: #f4f4f4;
+  color: #333;
+  font-weight: bold;
+}
+
+.taskTable tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+.taskTable tr:hover {
+  cursor: pointer;
+  background-color: #f1f1f1; /* Optional: Highlight the row on hover */
+}
+
+.noTasks {
+  text-align: center;
+  font-size: 18px;
+  color: #888;
+}
+
+/* Adding horizontal scrollbar appearance for smooth scrolling */
+.tableResponsive::-webkit-scrollbar {
+  height: 10px;
+}
+
+.tableResponsive::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 5px;
+}
+
+.tableResponsive::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+
+
+
+/* Modal styles */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modalContent {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 800px;
+  overflow-y: auto;
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 30px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Close button styles */
+.closeBtn {
+  background-color: #ff4d4f;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  float: right;
+}
+
+.closeBtn:hover {
+  background-color: #ff1a1f;
+}
+

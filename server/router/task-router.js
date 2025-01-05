@@ -10,5 +10,6 @@ router1.route("/assign-task/:taskId").post(validate(zodSchema.assignTaskSchema),
 router1.route("/get-tasks-by-creator").get(taskControllers.getTasksByCreator);
 router1.route("/get-tasks-assigned-to-admin").get(taskControllers.getTasksAssignedToAdmin);
 router1.route("/get-assigned-employees/:taskId").get(taskControllers.getAssignedEmployeesForTask);
-
+router1.route("/get-tasks-assigned-to-employee/:employeeId").get(taskControllers.getTasksByEmployee);
+router1.route("/get-tasks-by-project/:projectId").get(taskControllers.getTasksByProject);
 module.exports = router1;

@@ -7,6 +7,7 @@ import { SERVERHOST } from "../../../constants/constant";
 const AssignTaskToAdmin = () => {
   const [tasks, setTasks] = useState([]);
   const [admins, setAdmins] = useState([]);
+  const [projects, setProjects] = useState([]); // Store projects here
   const [selectedTask, setSelectedTask] = useState(null);
   const [selectedAdminId, setSelectedAdminId] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -14,6 +15,7 @@ const AssignTaskToAdmin = () => {
   useEffect(() => {
     fetchTasks();
     fetchAdmins();
+    fetchProjects(); // Fetch projects
   }, []);
 
   const fetchTasks = async () => {
@@ -28,7 +30,10 @@ const AssignTaskToAdmin = () => {
       );
       setTasks(response.data.tasks || []);
     } catch (error) {
-      console.error("Error fetching tasks:", error.response?.data || error.message);
+      console.error(
+        "Error fetching tasks:",
+        error.response?.data || error.message
+      );
       setTasks([]);
     }
   };
@@ -41,8 +46,27 @@ const AssignTaskToAdmin = () => {
       );
       setAdmins(response.data.data || []);
     } catch (error) {
-      console.error("Error fetching admins:", error.response?.data || error.message);
+      console.error(
+        "Error fetching admins:",
+        error.response?.data || error.message
+      );
       toast.error("Failed to fetch admins.");
+    }
+  };
+
+  const fetchProjects = async () => {
+    try {
+      const response = await axios.get(
+        `${SERVERHOST}/api/task-manager-app/auth/tasks/get-projects`
+      );
+      
+      setProjects(response.data.projects || []);
+    } catch (error) {
+      console.error(
+        "Error fetching projects:",
+        error.response?.data || error.message
+      );
+      toast.error("Failed to fetch projects.");
     }
   };
 
@@ -69,8 +93,13 @@ const AssignTaskToAdmin = () => {
       setSelectedAdminId("");
       setIsModalOpen(false);
     } catch (error) {
-      console.error("Error assigning task:", error.response?.data || error.message);
-      toast.error(error.response?.data?.message || "Failed to assign the task.");
+      console.error(
+        "Error assigning task:",
+        error.response?.data || error.message
+      );
+      toast.error(
+        error.response?.data?.message || "Failed to assign the task."
+      );
     }
   };
 
@@ -85,6 +114,11 @@ const AssignTaskToAdmin = () => {
     setSelectedAdminId("");
   };
 
+  const getProjectName = (projectID) => {
+    const project = projects.find((proj) => proj._id === projectID);
+    return project ? project.name : "Project not found";
+  };
+
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Assign Tasks to Admin</h1>
@@ -94,8 +128,10 @@ const AssignTaskToAdmin = () => {
             <th>Sr. No.</th>
             <th>Title</th>
             <th>Description</th>
+            <th>Project Name</th> {/* New Column */}
             <th>Status</th>
             <th>Priority</th>
+            <th>Current Department</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -106,17 +142,17 @@ const AssignTaskToAdmin = () => {
                 <td>{index + 1}</td>
                 <td>{task.title}</td>
                 <td>{task.description}</td>
+                <td>{getProjectName(task.projectId)}</td>
                 <td>{task.status}</td>
                 <td>{task.priority}</td>
+                <td>{task.currentDepartment}</td>
                 <td>
                   {task.initiallyAssignedTo ? (
                     <span>
                       Already Assigned to{" "}
-                      {
-                        admins.find((admin) => admin._id === task.initiallyAssignedTo)
-                          ? admins.find((admin) => admin._id === task.initiallyAssignedTo).fullName
-                          : "Admin not found"
-                      }
+                      {admins.find(
+                        (admin) => admin._id === task.initiallyAssignedTo
+                      )?.fullName || "Admin not found"}
                     </span>
                   ) : (
                     <button
@@ -131,7 +167,7 @@ const AssignTaskToAdmin = () => {
             ))
           ) : (
             <tr>
-              <td colSpan="6" style={{ textAlign: "center" }}>
+              <td colSpan="8" style={{ textAlign: "center" }}>
                 No tasks available
               </td>
             </tr>
@@ -152,7 +188,9 @@ const AssignTaskToAdmin = () => {
             >
               <option value="">Select Admin</option>
               {admins
-                .filter((admin) => admin.department === selectedTask.currentDepartment) // Only show admins from the same department as the task
+                .filter(
+                  (admin) => admin.department === selectedTask.currentDepartment
+                )
                 .map((admin) => (
                   <option key={admin._id} value={admin._id}>
                     {admin.fullName}

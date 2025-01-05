@@ -1,70 +1,79 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import styles from "./ManageAdmins.module.css";
+import styles from "./ManageEmployees.module.css";
+import { fetchProfileData } from "./get-Data";
 import { toast } from "react-toastify";
 import { SERVERHOST } from "../../../constants/constant";
 
-const ManageAdmins = () => {
-  const [admins, setAdmins] = useState([]);
+const ManageEmployees = () => {
+  const [employees, setEmployees] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
-  const [department, setDepartment] = useState("");
   const [loading, setLoading] = useState(false);
-  const [newAdmin, setNewAdmin] = useState(null);  // Store the newly created admin data
+  const [newEmployee, setNewEmployee] = useState(null); // Store the newly created employee data
   const [copySuccess, setCopySuccess] = useState("");
-
-  const departments = [
-    "Application",
-    "Design",
-    "Production",
-    "Store",
-    "Quality",
-    "Purchase",
-    "Maintenance",
-    "Services"
-  ];
+  const [profileData, setProfileData] = useState(null);
 
   useEffect(() => {
-    fetchAdmins();
+    const fetchData = async () => {
+      try {
+        const data = await fetchProfileData();
+        setProfileData(data);
+      } catch (error) {
+        console.error("Error fetching profile data:", error);
+      }
+    };
+
+    fetchData();
   }, []);
 
-  const fetchAdmins = async () => {
+  useEffect(() => {
+    fetchEmployees();
+  }, []);
+
+  const fetchEmployees = async () => {
     try {
       const response = await axios.get(
-        `${SERVERHOST}/api/task-manager-app/auth/get-data/get-all-users-by-role/admin`
+        `${SERVERHOST}/api/task-manager-app/auth/get-data/get-employees-for-admin`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("tokenAdmin")}`,
+          },
+        }
       );
-      setAdmins(response.data.data);
+      setEmployees(response.data.employees);
     } catch (error) {
-      console.error("Error fetching admins:", error);
-      toast.error("Failed to fetch admins.");
+      console.error("Error fetching employees:", error);
+      toast.error("Failed to fetch employees.");
     }
   };
 
-  const handleAddAdmin = async () => {
+  const handleAddEmployee = async () => {
     setLoading(true);
     try {
-      const departmentLowercase = department.toLowerCase();
       const response = await axios.post(
-        `${SERVERHOST}/api/task-manager-app/auth/admin-registration-by-sa`,
-        { fullName, email, department: departmentLowercase },
+        `${SERVERHOST}/api/task-manager-app/auth/employee-registration-by-admin`,
+        { fullName, email, department: profileData.department.toLowerCase() },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("tokenSuperAdmin")}`,
+            Authorization: `Bearer ${localStorage.getItem("tokenAdmin")}`,
           },
         }
       );
 
-      setNewAdmin(response.data.data); // Store the new admin's data
+      setNewEmployee(response.data.data); // Store the new employee's data
       toast.success(response.data.message);
-      fetchAdmins(); // Refresh the list after adding new admin
+      fetchEmployees(); // Refresh the list after adding new employee
       setIsModalOpen(false);
       setFullName("");
       setEmail("");
-      setDepartment("");
     } catch (error) {
-      console.error("Error adding admin:", error.response?.data || error.message);
-      toast.error(error.response?.data?.message || "Failed to add admin.");
+      console.error(
+        "Error adding employee:",
+        error.response?.data || error.message
+      );
+      toast.error(error.response?.data?.message || "Failed to add employee.");
     } finally {
       setLoading(false);
     }
@@ -78,21 +87,20 @@ const ManageAdmins = () => {
     setIsModalOpen(false);
     setFullName("");
     setEmail("");
-    setDepartment("");
   };
 
   const handleCopyLoginDetails = () => {
-    const loginDetails = `Email: ${newAdmin.email}, Password: ${newAdmin.plainPassword}`;
+    const loginDetails = `Email: ${newEmployee.email}, Password: ${newEmployee.plainPassword}`;
     navigator.clipboard.writeText(loginDetails);
     setCopySuccess("Login details copied to clipboard!");
   };
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Manage Admins</h1>
+      <h1 className={styles.title}>Manage Employees</h1>
       <div className={styles.addButtonContainer}>
         <button className={styles.addButton} onClick={openModal}>
-          Add new Admin
+          Add new Employee
         </button>
       </div>
 
@@ -103,26 +111,22 @@ const ManageAdmins = () => {
             <th>Full Name</th>
             <th>Email</th>
             <th>Department</th>
-            {/* <th>Action</th> */}
           </tr>
         </thead>
         <tbody>
-          {admins && admins.length > 0 ? (
-            admins.map((admin, index) => (
-              <tr key={admin._id}>
+          {employees && employees.length > 0 ? (
+            employees.map((employee, index) => (
+              <tr key={employee._id}>
                 <td>{index + 1}</td>
-                <td>{admin.fullName}</td>
-                <td>{admin.email}</td>
-                <td>{admin.department}</td>
-                {/* <td>
-                  <button className={styles.viewButton}>View</button>
-                </td> */}
+                <td>{employee.fullName}</td>
+                <td>{employee.email}</td>
+                <td>{employee.department}</td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="5" style={{ textAlign: "center" }}>
-                No admins available
+              <td colSpan="4" style={{ textAlign: "center" }}>
+                No employees available
               </td>
             </tr>
           )}
@@ -132,7 +136,7 @@ const ManageAdmins = () => {
       {isModalOpen && (
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
-            <h3>Create New Admin</h3>
+            <h3>Create New Employee</h3>
             <form onSubmit={(e) => e.preventDefault()}>
               <div className={styles.inputGroup}>
                 <label htmlFor="fullName">Full Name:</label>
@@ -158,25 +162,18 @@ const ManageAdmins = () => {
 
               <div className={styles.inputGroup}>
                 <label htmlFor="department">Department:</label>
-                <select
+                <input
+                  type="text"
                   id="department"
-                  value={department}
-                  onChange={(e) => setDepartment(e.target.value)}
-                  required
-                >
-                  <option value="">Select Department</option>
-                  {departments.map((dept, index) => (
-                    <option key={index} value={dept}>
-                      {dept}
-                    </option>
-                  ))}
-                </select>
+                  value={profileData.department}
+                  disabled
+                />
               </div>
 
               <div className={styles.modalButtons}>
                 <button
                   className={styles.submitButton}
-                  onClick={handleAddAdmin}
+                  onClick={handleAddEmployee}
                   disabled={loading}
                 >
                   {loading ? "Adding..." : "Submit"}
@@ -190,23 +187,29 @@ const ManageAdmins = () => {
         </div>
       )}
 
-      {/* Modal to display the new admin login details */}
-      {newAdmin && (
+      {/* Modal to display the new employee login details */}
+      {newEmployee && (
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
-            <h3>New Admin Created</h3>
-            <p>
-              Here are the login details of the new admin:
-            </p>
+            <h3>New Employee Created</h3>
+            <p>Here are the login details of the new employee:</p>
             <div className={styles.details}>
-              <p>Email: {newAdmin.email}</p>
-              <p>Password: {newAdmin.plainPassword}</p>
-              <button onClick={handleCopyLoginDetails} className={styles.copyButton}>
+              <p>Email: {newEmployee.email}</p>
+              <p>Password: {newEmployee.plainPassword}</p>
+              <button
+                onClick={handleCopyLoginDetails}
+                className={styles.copyButton}
+              >
                 Copy Login Details
               </button>
-              {copySuccess && <p className={styles.copySuccess}>{copySuccess}</p>}
+              {copySuccess && (
+                <p className={styles.copySuccess}>{copySuccess}</p>
+              )}
             </div>
-            <button className={styles.closeButton} onClick={() => setNewAdmin(null)}>
+            <button
+              className={styles.closeButton}
+              onClick={() => setNewEmployee(null)}
+            >
               Close
             </button>
           </div>
@@ -216,4 +219,4 @@ const ManageAdmins = () => {
   );
 };
 
-export default ManageAdmins;
+export default ManageEmployees;

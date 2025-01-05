@@ -111,11 +111,12 @@
 .checkboxItem {
   display: flex;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 8px; /* Reduce the margin */
+  gap: 6px; /* Adjust spacing between checkbox and label */
 }
 
 .checkboxItem input[type="checkbox"] {
-  margin-right: 12px;
+  margin-right: 6px; /* Reduce margin */
   cursor: pointer;
 }
 

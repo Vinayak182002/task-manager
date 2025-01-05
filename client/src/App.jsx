@@ -53,6 +53,8 @@ const App = () => {
           <Route path="/store-employee-dashboard" element={<EmployeeDashboard department="store" />} />
           <Route path="/quality-employee-dashboard" element={<EmployeeDashboard department="quality" />} />
           <Route path="/purchase-employee-dashboard" element={<EmployeeDashboard department="purchase" />} />
+          <Route path="/maintenance-employee-dashboard" element={<EmployeeDashboard department="maintenance" />} />
+          <Route path="/services-employee-dashboard" element={<EmployeeDashboard department="services" />} />
         </Routes>
       </BrowserRouter>
     </>

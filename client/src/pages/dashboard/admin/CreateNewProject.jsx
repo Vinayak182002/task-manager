@@ -18,7 +18,6 @@ const CreateNewProject = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("triggered");
     
     try {
       const response = await axios.post(
@@ -27,7 +26,7 @@ const CreateNewProject = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("tokenSAdmin")}`,
+            Authorization: `Bearer ${localStorage.getItem("tokenAdmin")}`,
           },
         }
       );
