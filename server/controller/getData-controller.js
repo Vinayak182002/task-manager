@@ -148,10 +148,26 @@ const getAllUsersByRole = async (req, res) => {
   }
 };
 
+const getEmployeesById = async (req, res) => {
+  try {
+    const employee = await Employee.findById(req.params.employeeId);
+
+    if (!employee) {
+      return res.status(400).json({ message: "No employee found!" });
+    }
+
+    return res.status(200).json({ employee });
+  } catch (error) {
+    console.error("Error fetching employees:", error.message);
+    return res.status(500).json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
 module.exports = {
   getSuperAdminData,
   getAdminData,
   getEmployeeData,
   getAllUsersByRole,
   getEmployeesForAdmin,
+  getEmployeesById,
 };

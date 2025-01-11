@@ -87,6 +87,7 @@
   justify-content: center;
   align-items: center;
   z-index: 999;
+  overflow: hidden;
 }
 
 .modalContent {
@@ -95,31 +96,25 @@
   border-radius: 8px;
   width: 80%;
   max-width: 800px;
-  overflow-y: auto;
-}
-
-.close {
-  position: absolute;
-  top: 10px;
-  right: 20px;
-  font-size: 30px;
-  font-weight: bold;
-  cursor: pointer;
+  max-height: 80vh; /* Restrict height to prevent overflow */
+  overflow-y: auto; /* Enable vertical scrolling */
+  position: relative;
 }
 
 /* Close button styles */
 .closeBtn {
-  background-color: #ff4d4f;
+  position: absolute;
+  top: 10px;
+  right: 15px;
   color: white;
   border: none;
-  padding: 10px 20px;
+  padding: 10px 15px;
   font-size: 16px;
   cursor: pointer;
   border-radius: 5px;
-  float: right;
 }
 
 .closeBtn:hover {
-  background-color: #ff1a1f;
+  background-color: #a47b7c;
 }
 

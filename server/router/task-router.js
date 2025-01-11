@@ -12,4 +12,7 @@ router1.route("/get-tasks-assigned-to-admin").get(taskControllers.getTasksAssign
 router1.route("/get-assigned-employees/:taskId").get(taskControllers.getAssignedEmployeesForTask);
 router1.route("/get-tasks-assigned-to-employee/:employeeId").get(taskControllers.getTasksByEmployee);
 router1.route("/get-tasks-by-project/:projectId").get(taskControllers.getTasksByProject);
+router1.route("/submit-task-by-employee/:taskId").post(taskControllers.submitTaskByEmployee);
+router1.route("/validate-submission-by-employee/:taskId/:employeeId").patch(taskControllers.validateSubmissionByEmployee);
+router1.route("/delete-submission-by-employee/:taskId/:employeeId").delete(taskControllers.deleteSubmissionByEmployee);
 module.exports = router1;

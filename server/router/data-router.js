@@ -12,5 +12,6 @@ router2.route("/update-employee-data").put(updateDataControllers.updateEmployeeI
 
 router2.route("/get-all-users-by-role/:role").get(getDataControllers.getAllUsersByRole);
 router2.route("/get-employees-for-admin").get(getDataControllers.getEmployeesForAdmin);
+router2.route("/get-employee-by-id/:employeeId").get(getDataControllers.getEmployeesById);
 
 module.exports = router2;

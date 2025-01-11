@@ -112,6 +112,7 @@ const taskSchema = new mongoose.Schema(
           enum: ["SuperAdmin", "Employee", "Admin"],
           required: true,
         },
+        submissionNote: { type: String, required: true },
         fileName: { type: String, required: true },
         filePath: { type: String, required: true },
         department: {
@@ -128,6 +129,7 @@ const taskSchema = new mongoose.Schema(
           ],
           required: true,
         },
+        selfValidated: { type: Boolean, default: false },
         uploadedAt: { type: Date, default: Date.now },
       },
     ],
